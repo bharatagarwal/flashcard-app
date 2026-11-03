@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 2,
+  "title": "Divisibility and logic",
+  "concepts": [
+    {
+      "id": "divisibility",
+      "title": "Divisibility notation",
+      "summary": "",
+      "explanation": "Divisibility notation",
+      "pitfall": "",
+      "sources": [],
+      "revision": 5,
+      "sections": [],
+      "prerequisiteIDs": []
+    },
+    {
+      "id": "logic",
+      "title": "Mathematical “or”",
+      "summary": "",
+      "explanation": "Mathematical “or”",
+      "pitfall": "",
+      "sources": [],
+      "revision": 5,
+      "sections": [],
+      "prerequisiteIDs": []
+    }
+  ],
+  "cards": [
+    {
+      "id": "divisibility.meaning",
+      "conceptID": "divisibility",
+      "objectiveID": "divisibility.meaning",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Read \\(3\\mid18\\) in words.",
+      "answer": "Three divides eighteen.",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "divisibility.truth",
+      "conceptID": "divisibility",
+      "objectiveID": "divisibility.truth",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Is \\(3\\mid18\\) true or false?",
+      "answer": "True.",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "divisibility.definition",
+      "conceptID": "divisibility",
+      "revision": 5,
+      "kind": "Explain",
+      "prompt": "Express \\(a\\mid b\\) using multiplication and an integer.",
+      "answer": "\\[b=ak\\text{ for some }k\\in\\mathbb Z.\\]",
+      "hint": "",
+      "objectiveID": "divisibility.definition",
+      "change": "wording"
+    },
+    {
+      "id": "divisibility.direction",
+      "conceptID": "divisibility",
+      "revision": 5,
+      "kind": "Apply",
+      "prompt": "Is \\(18\\mid3\\) true or false?",
+      "answer": "False: \\(3\\) is not an integer multiple of \\(18\\).",
+      "hint": "",
+      "objectiveID": "divisibility.direction",
+      "change": "wording"
+    },
+    {
+      "id": "divisibility.not",
+      "conceptID": "divisibility",
+      "revision": 5,
+      "kind": "Notation",
+      "prompt": "What does \\(3\\nmid19\\) mean?",
+      "answer": "Three does not divide nineteen.",
+      "hint": "",
+      "objectiveID": "divisibility.not",
+      "change": "wording"
+    },
+    {
+      "id": "divisibility.slash",
+      "conceptID": "divisibility",
+      "revision": 5,
+      "kind": "Explain",
+      "prompt": "How do \\(3\\mid18\\) and \\(3/18\\) differ?",
+      "answer": "\\(3\\mid18\\) is a true-or-false claim. \\(3/18=1/6\\) is a number.",
+      "hint": "",
+      "objectiveID": "divisibility.slash",
+      "change": "wording"
+    },
+    {
+      "id": "logic.or",
+      "conceptID": "logic",
+      "revision": 5,
+      "kind": "Apply",
+      "prompt": "Is “\\(3\\mid18\\) or \\(11\\) is not prime” true or false?",
+      "answer": "True.",
+      "hint": "",
+      "objectiveID": "logic.or",
+      "change": "wording"
+    },
+    {
+      "id": "logic.both",
+      "conceptID": "logic",
+      "revision": 5,
+      "kind": "Explain",
+      "prompt": "When is \\(P\\lor Q\\) false?",
+      "answer": "Only when both claims are false.",
+      "hint": "",
+      "objectiveID": "logic.both",
+      "change": "wording"
+    },
+    {
+      "id": "divisibility.read",
+      "conceptID": "divisibility",
+      "revision": 5,
+      "kind": "Notation",
+      "prompt": "What does \\(3\\mid18\\) mean, and is it true?",
+      "answer": "It means “3 divides 18”. It is true because \\(18=3\\times6\\), with integer multiplier 6 and no remainder.",
+      "hint": "",
+      "objectiveID": "divisibility.read",
+      "change": "wording",
+      "archived": true
+    }
+  ],
+  "assets": []
+}

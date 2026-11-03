@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 2,
+  "title": "Cube identities",
+  "concepts": [
+    {
+      "id": "cubes",
+      "title": "Sum & difference of cubes",
+      "summary": "",
+      "explanation": "Sum & difference of cubes",
+      "pitfall": "",
+      "sources": [],
+      "revision": 5,
+      "sections": [],
+      "prerequisiteIDs": []
+    }
+  ],
+  "cards": [
+    {
+      "id": "cubes.difference",
+      "conceptID": "cubes",
+      "revision": 5,
+      "kind": "Recall",
+      "prompt": "Factor \\(a^3-b^3\\).",
+      "answer": "\\[(a-b)(a^2+ab+b^2)\\]",
+      "hint": "",
+      "objectiveID": "cubes.difference",
+      "change": "wording"
+    },
+    {
+      "id": "cubes.sum",
+      "conceptID": "cubes",
+      "revision": 5,
+      "kind": "Recall",
+      "prompt": "Factor \\(a^3+b^3\\).",
+      "answer": "\\[(a+b)(a^2-ab+b^2)\\]",
+      "hint": "",
+      "objectiveID": "cubes.sum",
+      "change": "wording"
+    },
+    {
+      "id": "cubes.screenshot-factor",
+      "conceptID": "cubes",
+      "revision": 5,
+      "kind": "Apply",
+      "prompt": "Factor \\(x^3-27\\).",
+      "answer": "\\[(x-3)(x^2+3x+9)\\]",
+      "hint": "",
+      "objectiveID": "cubes.screenshot-factor",
+      "change": "wording"
+    },
+    {
+      "id": "cubes.transfer",
+      "conceptID": "cubes",
+      "revision": 5,
+      "kind": "Apply",
+      "prompt": "Factor \\(8x^3+125\\).",
+      "answer": "\\[(2x+5)(4x^2-10x+25)\\]",
+      "hint": "",
+      "objectiveID": "cubes.transfer",
+      "change": "wording"
+    },
+    {
+      "id": "cubes.simplify",
+      "conceptID": "cubes",
+      "revision": 5,
+      "kind": "Apply",
+      "prompt": "Simplify \\(\\displaystyle\\frac{(x+3)(x^3-27)}{x^2-9}\\) and state the excluded values.",
+      "answer": "\\[x^2+3x+9,\\qquad x\\ne\\pm3\\]",
+      "hint": "",
+      "objectiveID": "cubes.simplify",
+      "change": "wording"
+    },
+    {
+      "id": "cubes.domain",
+      "conceptID": "cubes",
+      "revision": 5,
+      "kind": "Explain",
+      "prompt": "Can cancelling \\(x-3\\) from a fraction make \\(x=3\\) allowed in the original expression?",
+      "answer": "No. The original domain restrictions remain.",
+      "hint": "",
+      "objectiveID": "cubes.domain",
+      "change": "wording"
+    },
+    {
+      "id": "cubes.distinguish",
+      "conceptID": "cubes",
+      "revision": 5,
+      "kind": "Explain",
+      "prompt": "Are \\(a^3+b^3\\) and \\((a+b)^3\\) the same expression?",
+      "answer": "No. At \\(a=b=1\\), they give \\(2\\) and \\(8\\).",
+      "hint": "",
+      "objectiveID": "cubes.distinguish",
+      "change": "wording"
+    },
+    {
+      "id": "cubes.expand-sum",
+      "conceptID": "cubes",
+      "objectiveID": "cubes.expand-sum",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Expand \\((a+b)^3\\).",
+      "answer": "\\[a^3+3a^2b+3ab^2+b^3\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "cubes.expand-difference",
+      "conceptID": "cubes",
+      "objectiveID": "cubes.expand-difference",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Expand \\((a-b)^3\\).",
+      "answer": "\\[a^3-3a^2b+3ab^2-b^3\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "cubes.derive-difference",
+      "conceptID": "cubes",
+      "revision": 5,
+      "kind": "Derive",
+      "prompt": "Explain why \\((a-b)(a^2+ab+b^2)\\) equals \\(a^3-b^3\\).",
+      "answer": "Multiply the quadratic by a, then by \\(-b\\):\\[a^3+a^2b+ab^2\\]\\[-a^2b-ab^2-b^3.\\]Add. Both pairs of mixed terms cancel, leaving \\(a^3-b^3\\).",
+      "hint": "",
+      "objectiveID": "cubes.derive-difference",
+      "change": "wording",
+      "archived": true
+    },
+    {
+      "id": "cubes.derive-sum",
+      "conceptID": "cubes",
+      "revision": 5,
+      "kind": "Derive",
+      "prompt": "Derive the sum-of-cubes factors from the difference-of-cubes identity.",
+      "answer": "Replace \\(b\\) by \\(-b\\). Then \\(a^3-(-b)^3=a^3+b^3\\), and the factors become \\((a+b)(a^2-ab+b^2)\\).",
+      "hint": "",
+      "objectiveID": "cubes.derive-sum",
+      "change": "wording",
+      "archived": true
+    }
+  ],
+  "assets": []
+}

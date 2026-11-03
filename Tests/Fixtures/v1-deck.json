@@ -1,0 +1,522 @@
+{
+  "schemaVersion": 1,
+  "title": "Math foundations",
+  "concepts": [
+    {
+      "id": "angles",
+      "title": "Adding angles",
+      "summary": "Rebuild sine and cosine identities from a rotation.",
+      "explanation": "On the unit circle, the point at angle a is (cos a, sin a). Its horizontal component is cos a and its vertical component is sin a.\n\nRotate through angle b. A horizontal unit vector becomes (cos b, sin b). A vertical unit vector becomes (−sin b, cos b): for an acute positive b it points partly left.\n\nAdd the two scaled vectors:\n\\[\\cos a(\\cos b,\\sin b)+\\sin a(-\\sin b,\\cos b).\\]\nThe new angle is a+b. Equate coordinates:\n\\[\\cos(a+b)=\\cos a\\cos b-\\sin a\\sin b\\]\n\\[\\sin(a+b)=\\sin a\\cos b+\\cos a\\sin b.\\]\nFor subtraction, replace b by −b. Cosine is even and sine is odd, so the cross terms change sign.\n\nCheck a=b=45°. Cosine of 90° is zero, so its equal terms must subtract.",
+      "pitfall": "Sine does not distribute over addition: sin(a+b) is not sin a + sin b.",
+      "diagram": "rotation",
+      "sourceImage": null,
+      "sources": []
+    },
+    {
+      "id": "derivatives",
+      "title": "Sine & cosine derivatives",
+      "summary": "See why radians and the addition identities give the rules.",
+      "explanation": "A derivative is the limit of the difference quotient:\n\\[f'(x)=\\lim_{h\\to0}\\frac{f(x+h)-f(x)}h.\\]\nFor angles in radians, geometry of the unit circle gives sin h < h < tan h for 0<h<π/2. Divide and rearrange to obtain cos h < sin h/h < 1. The same limit holds from the negative side because sin h/h is even.\n\\[\\lim_{h\\to0}\\frac{\\sin h}{h}=1.\\]\nAlso cos h−1=−2sin²(h/2), so (cos h−1)/h tends to zero.\n\nUse the angle addition identity in the sine difference quotient:\n\\[\\frac{\\sin(x+h)-\\sin x}{h}=\\sin x\\frac{\\cos h-1}{h}+\\cos x\\frac{\\sin h}{h}.\\]\nThe first term tends to zero; the second tends to cos x.\n\\[\\frac{d}{dx}\\sin x=\\cos x.\\]\nFor cosine:\n\\[\\frac{\\cos(x+h)-\\cos x}{h}=\\cos x\\frac{\\cos h-1}{h}-\\sin x\\frac{\\sin h}{h}.\\]\nTherefore its derivative is −sin x.\n\nA geometric check: at angle zero, increasing the angle moves the point straight up. The sine coordinate initially increases at rate 1, while the cosine coordinate initially has rate 0.",
+      "pitfall": "These rules assume radians. For sin of a degree measure x, the derivative includes a factor π/180.",
+      "diagram": "rotation",
+      "sourceImage": "derivatives.png",
+      "sources": []
+    },
+    {
+      "id": "logs",
+      "title": "Repeated derivatives",
+      "summary": "Track powers and signs in the screenshot problem.",
+      "explanation": "For x>0, the derivative of ln x is 1/x. Rewrite fractions as powers to keep subsequent steps clear:\n\\[\\ln x\\ \\to\\ x^{-1}\\ \\to\\ -x^{-2}\\ \\to\\ 2x^{-3}\\ \\to\\ -6x^{-4}.\\]\nEach step uses the power rule: d(xⁿ)/dx = nxⁿ⁻¹.\n\nDerivatives distribute over sums. For f(x)=sin x+ln x, differentiate the two terms separately four times:\n\\[f^{(4)}(x)=\\sin x-\\frac6{x^4},\\qquad x>0.\\]\nFor n≥1, the general logarithm pattern is:\n\\[\\frac{d^n}{dx^n}\\ln x=(-1)^{n-1}\\frac{(n-1)!}{x^n}.\\]",
+      "pitfall": "The coefficient in the fourth derivative of ln x is −6, not −24: the factorial is (n−1)!.",
+      "diagram": null,
+      "sourceImage": "derivatives.png",
+      "sources": []
+    },
+    {
+      "id": "sets",
+      "title": "Set difference",
+      "summary": "Read the backslash as “in the left set, but not the right”.",
+      "explanation": "The backslash in X∖Y denotes set difference:\n\\[X\\setminus Y=\\{z:z\\in X\\text{ and }z\\notin Y\\}.\\]\nStart with the left set X. Remove all elements also present in Y.\n\nIn your screenshot, X contains a spade, square, heart, diamond, and triangle. Y contains a spade, square, club, and heart. Remove the shared spade, square, and heart. The diamond and triangle remain.\n\nOrder matters: Y∖X contains the club instead. Shared elements form the intersection X∩Y. All elements from either set form the union X∪Y.",
+      "pitfall": "Set difference is neither division nor the symmetric difference. It keeps elements only from the left set.",
+      "diagram": "sets",
+      "sourceImage": "sets.png",
+      "sources": []
+    },
+    {
+      "id": "ellipse",
+      "title": "Circle & ellipse",
+      "summary": "Find axis lengths from endpoints, not the denominators alone.",
+      "explanation": "A circle is the set of points a fixed distance r from a centre (h,k). Pythagoras gives:\n\\[(x-h)^2+(y-k)^2=r^2.\\]\nAt the origin, divide through by r²:\n\\[\\frac{x^2}{r^2}+\\frac{y^2}{r^2}=1.\\]\nStretch a unit circle horizontally by a and vertically by b. Its old coordinates are x/a and y/b, so:\n\\[\\frac{x^2}{a^2}+\\frac{y^2}{b^2}=1,\\qquad a,b>0.\\]\nHere a is the horizontal half-width and b the vertical half-height. The longer full axis is the major axis.\n\nFor x²/4+y²/1=1, set y=0 to get x=±2. The horizontal axis runs from −2 to 2: length 4. Set x=0 to get y=±1: vertical length 2.\n\nFor a shifted, axis-aligned ellipse, replace x by x−h and y by y−k. A circle is the special case a=b. This equation describes ellipses aligned with the coordinate axes; a rotated ellipse can contain an xy term.",
+      "pitfall": "Denominators are squared half-lengths. Take a square root and then double to get the full axis length.",
+      "diagram": "ellipse",
+      "sourceImage": "ellipse.png",
+      "sources": []
+    },
+    {
+      "id": "measure",
+      "title": "Circle & ellipse area",
+      "summary": "Separate lengths from areas and rebuild the scale factors.",
+      "explanation": "The number π is defined as a circle’s circumference divided by its diameter. Therefore:\n\\[C=\\pi(2r)=2\\pi r.\\]\nTo see the area formula, split a circle into many thin sectors and alternate their directions. In the limit the arrangement has height r and base half the circumference, πr:\n\\[A=\\tfrac12 Cr=\\pi r^2.\\]\nAn ellipse is a unit circle stretched by a horizontally and b vertically. Area scales by the product of these factors:\n\\[A_{\\text{ellipse}}=\\pi ab.\\]\nCheck a=b=r: this returns the circle formula. Lengths have units such as cm; areas have squared units such as cm².",
+      "pitfall": "An ellipse has area πab when a and b are half-axis lengths. Its perimeter has no comparable simple formula.",
+      "diagram": "ellipse",
+      "sourceImage": null,
+      "sources": []
+    },
+    {
+      "id": "conics",
+      "title": "Parabola & hyperbola",
+      "summary": "Read each equation through distance and intercepts.",
+      "explanation": "A parabola consists of points equally far from a focus and a line called the directrix. With focus (0,p), directrix y=−p, and p≠0:\n\\[\\sqrt{x^2+(y-p)^2}=|y+p|.\\]\nSquare both sides and simplify:\n\\[x^2=4py.\\]\nThe vertex is the origin; positive p opens upward and negative p opens downward. A shifted vertical parabola has (x−h)²=4p(y−k).\n\nA standard horizontal hyperbola has equation:\n\\[\\frac{x^2}{a^2}-\\frac{y^2}{b^2}=1,\\qquad a,b>0.\\]\nAt y=0, its vertices are x=±a. Unlike an ellipse, the minus sign allows unbounded branches. Far from the origin, the constant 1 is small relative to the squared terms; the branches approach:\n\\[y=\\pm\\frac ba x.\\]\nSwapping which term is positive gives a vertical hyperbola. These are axis-aligned forms.",
+      "pitfall": "A parabola is not an ellipse with a missing denominator. For a hyperbola, the positive squared term tells you the opening direction.",
+      "diagram": null,
+      "sourceImage": null,
+      "sources": []
+    },
+    {
+      "id": "divisibility",
+      "title": "Divisibility notation",
+      "summary": "Read a vertical bar as “divides with no remainder”.",
+      "explanation": "The notation a∣b reads “a divides b”. It states that b is an integer multiple of a:\n\\[a\\mid b\\iff b=ak\\text{ for some integer }k.\\]\nFor a nonzero divisor a, this is equivalent to saying that b divided by a has no remainder.\n\nIn the screenshot, 3∣18 is true because 18=3×6. The vertical bar makes a true-or-false claim; it does not ask you to calculate the fraction 3/18.\n\nOrder matters. The number on the left is the proposed divisor. The number on the right is the number being divided. Thus 18∣3 is false: no integer k makes 3=18k.\n\nA crossed bar means “does not divide”:\n\\[3\\nmid19.\\]\nSince 19=3×6+1, division leaves remainder 1.\n\nAll these examples concern integers. Saying 19/3 is a real number does not make 3∣19 true: the multiplier must be an integer.",
+      "pitfall": "The vertical bar ∣ means “divides”; the slash / denotes a fraction. Keep the direction: left divides right.",
+      "diagram": null,
+      "sourceImage": "divisibility.png",
+      "sources": []
+    },
+    {
+      "id": "logic",
+      "title": "Mathematical “or”",
+      "summary": "An “or” statement is true when at least one part is true.",
+      "explanation": "In mathematics, “P or Q” normally uses inclusive or. It is true if P is true, Q is true, or both are true. It is false only when both parts are false.\n\\[P\\lor Q\\]\nThe symbol ∨ is another way to write “or”.\n\nThe screenshot says “3∣18 or 11 is not prime.” Check each part separately. 3∣18 is true because 18=3×6. “11 is not prime” is false because the only positive divisors of 11 are 1 and 11. A true part joined to a false part by “or” gives a true statement.\n\nCompare “and”: P and Q requires both parts to be true. Therefore “3∣18 and 11 is not prime” would be false.",
+      "pitfall": "Mathematical “or” allows both parts to be true. “Exactly one is true” is a different rule, called exclusive or.",
+      "diagram": null,
+      "sourceImage": null,
+      "sources": []
+    },
+    {
+      "id": "cubes",
+      "title": "Sum & difference of cubes",
+      "summary": "Rebuild the factors by making the mixed terms cancel.",
+      "explanation": "These identities factor a sum or difference of cubes:\n\\[a^3-b^3=(a-b)(a^2+ab+b^2)\\]\n\\[a^3+b^3=(a+b)(a^2-ab+b^2).\\]\nThe first factor keeps the sign between the cubes. The middle term in the quadratic takes the opposite sign. Its last term is always +b².\n\nWhy does the difference formula work? Use the distributive law. Multiplying the quadratic by a gives:\n\\[a(a^2+ab+b^2)=a^3+a^2b+ab^2.\\]\nMultiplying it by −b gives:\n\\[-b(a^2+ab+b^2)=-a^2b-ab^2-b^3.\\]\nAdd these expressions. The a²b terms cancel, as do the ab² terms. Only a³−b³ remains. This also shows how to rebuild the quadratic: choose the mixed terms so the unwanted terms cancel.\n\nTo obtain the sum formula, replace b by −b in the difference formula:\n\\[a^3-(-b)^3=(a-(-b))(a^2+a(-b)+(-b)^2).\\]\nSince (−b)³=−b³ and (−b)²=b², this becomes:\n\\[a^3+b^3=(a+b)(a^2-ab+b^2).\\]\n\nIn your screenshot, 27=3³. Set a=x and b=3:\n\\[x^3-27=(x-3)(x^2+3x+9).\\]\nAlso x²−9=(x−3)(x+3). Therefore:\n\\[\\frac{(x+3)(x^3-27)}{x^2-9}=x^2+3x+9,\\qquad x\\ne3,-3.\\]\nThe original denominator is zero at x=3 and x=−3. Cancelling factors does not make the original expression defined at those values.\n\nDo not confuse a³+b³ with (a+b)³. Cubing a sum creates mixed terms:\n\\[(a+b)^3=a^3+3a^2b+3ab^2+b^3.\\]\nFor subtraction, replace b by −b:\n\\[(a-b)^3=a^3-3a^2b+3ab^2-b^3.\\]\nFor a quick distinction, take a=b=1: a³+b³ is 2, whereas (a+b)³ is 8.",
+      "pitfall": "Factor whole products before cancelling. These cube-factor identities differ from expanding (a±b)³. Keep all values excluded by the original denominator.",
+      "diagram": null,
+      "sourceImage": "cubes.png",
+      "sources": []
+    }
+  ],
+  "cards": [
+    {
+      "id": "angles.sin",
+      "conceptID": "angles",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Write \\(\\sin(a+b)\\).",
+      "answer": "\\[\\sin a\\cos b+\\cos a\\sin b\\]",
+      "hint": "The two terms each pair one sine with one cosine."
+    },
+    {
+      "id": "angles.cos",
+      "conceptID": "angles",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Write \\(\\cos(a+b)\\).",
+      "answer": "\\[\\cos a\\cos b-\\sin a\\sin b\\]",
+      "hint": "Check a=b=45°: the result must be zero."
+    },
+    {
+      "id": "angles.rotation",
+      "conceptID": "angles",
+      "revision": 1,
+      "kind": "Explain",
+      "prompt": "Why is there a minus sign in the cosine addition formula?",
+      "answer": "When the vertical unit vector rotates through a positive acute angle b, its horizontal component is −sin b. The horizontal coordinate therefore contains −sin a sin b.",
+      "hint": "Track the horizontal coordinate of a rotated vertical vector."
+    },
+    {
+      "id": "angles.subtract",
+      "conceptID": "angles",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Write \\(\\sin(a-b)\\) and explain the changed sign.",
+      "answer": "\\[\\sin(a-b)=\\sin a\\cos b-\\cos a\\sin b\\]Replace b by −b; cosine is even and sine is odd.",
+      "hint": "Use the addition formula with −b."
+    },
+    {
+      "id": "angles.double",
+      "conceptID": "angles",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Derive \\(\\cos(2x)\\) from an addition formula.",
+      "answer": "\\[\\cos(x+x)=\\cos^2x-\\sin^2x\\]Using sin²x+cos²x=1 also gives 2cos²x−1 or 1−2sin²x.",
+      "hint": "Set a=b=x."
+    },
+    {
+      "id": "derivatives.sin",
+      "conceptID": "derivatives",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\(\\sin x\\), with x in radians.",
+      "answer": "\\[\\cos x\\]",
+      "hint": "At x=0, sine is increasing at rate 1."
+    },
+    {
+      "id": "derivatives.cos",
+      "conceptID": "derivatives",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\(\\cos x\\), with x in radians.",
+      "answer": "\\[-\\sin x\\]",
+      "hint": "For a small positive x, cosine is decreasing."
+    },
+    {
+      "id": "derivatives.limits",
+      "conceptID": "derivatives",
+      "revision": 1,
+      "kind": "Explain",
+      "prompt": "Which two limits turn the sine difference quotient into cos x?",
+      "answer": "\\[\\frac{\\sin h}{h}\\to1,\\qquad\\frac{\\cos h-1}{h}\\to0\\]Angles must be in radians.",
+      "hint": "One ratio tends to 1 and the other to 0."
+    },
+    {
+      "id": "derivatives.derive",
+      "conceptID": "derivatives",
+      "revision": 1,
+      "kind": "Derive",
+      "prompt": "Derive the derivative of sin x from the definition.",
+      "answer": "\\[\\frac{\\sin(x+h)-\\sin x}{h}=\\sin x\\frac{\\cos h-1}{h}+\\cos x\\frac{\\sin h}{h}.\\]\nThe two limits are 0 and 1, so the result is cos x.",
+      "hint": "Expand sin(x+h) first. Use radians."
+    },
+    {
+      "id": "derivatives.cycle",
+      "conceptID": "derivatives",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "List the next four derivatives of sin x in order.",
+      "answer": "\\[\\cos x,\\quad-\\sin x,\\quad-\\cos x,\\quad\\sin x\\]",
+      "hint": "Differentiate one step at a time; the fourth returns to the start."
+    },
+    {
+      "id": "derivatives.notation",
+      "conceptID": "derivatives",
+      "revision": 1,
+      "kind": "Notation",
+      "prompt": "What does \\(f^{(4)}(x)\\) mean?",
+      "answer": "Differentiate f four times. It does not mean f(x) raised to the fourth power.",
+      "hint": "The parenthesised superscript counts derivatives."
+    },
+    {
+      "id": "derivatives.chain",
+      "conceptID": "derivatives",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Differentiate \\(\\sin(3x)\\).",
+      "answer": "\\[3\\cos(3x)\\]The chain rule multiplies by the derivative of 3x.",
+      "hint": "Account for how fast the inside angle changes."
+    },
+    {
+      "id": "logs.fourth",
+      "conceptID": "logs",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Find \\(f^{(4)}(x)\\) for \\(f(x)=\\sin x+\\ln x\\).",
+      "answer": "\\[\\sin x-\\frac6{x^4},\\quad x>0\\]",
+      "hint": "Differentiate each term four times. Write the log derivatives as powers."
+    },
+    {
+      "id": "logs.power",
+      "conceptID": "logs",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Differentiate \\(-x^{-2}\\).",
+      "answer": "\\[2x^{-3}=\\frac2{x^3}\\]",
+      "hint": "Multiply by −2, then subtract 1 from the exponent."
+    },
+    {
+      "id": "logs.general",
+      "conceptID": "logs",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "What is the nth derivative of \\(\\ln x\\), for n≥1 and x>0?",
+      "answer": "\\[(-1)^{n-1}\\frac{(n-1)!}{x^n}\\]",
+      "hint": "Check n=1 gives 1/x."
+    },
+    {
+      "id": "sets.meaning",
+      "conceptID": "sets",
+      "revision": 1,
+      "kind": "Notation",
+      "prompt": "What does \\(X\\setminus Y\\) mean?",
+      "answer": "The elements in X that are not in Y. Start with X; remove what also appears in Y.",
+      "hint": "Read the sets from left to right."
+    },
+    {
+      "id": "sets.example",
+      "conceptID": "sets",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "If \\(X=\\{1,2,3\\}\\) and \\(Y=\\{2,4\\}\\), find \\(X\\setminus Y\\).",
+      "answer": "\\[\\{1,3\\}\\]",
+      "hint": "Begin with 1, 2, 3. Remove the shared element."
+    },
+    {
+      "id": "sets.reverse",
+      "conceptID": "sets",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "If \\(X=\\{1,2,3\\}\\) and \\(Y=\\{2,4\\}\\), find \\(Y\\setminus X\\).",
+      "answer": "\\[\\{4\\}\\]",
+      "hint": "This time start with Y."
+    },
+    {
+      "id": "sets.self",
+      "conceptID": "sets",
+      "revision": 1,
+      "kind": "Explain",
+      "prompt": "What is \\(X\\setminus X\\), and why?",
+      "answer": "\\[\\varnothing\\]Every element of X also belongs to the set we remove.",
+      "hint": "Can any element be in X and not in X?"
+    },
+    {
+      "id": "ellipse.circle",
+      "conceptID": "ellipse",
+      "revision": 1,
+      "kind": "Derive",
+      "prompt": "Derive the equation of a circle with centre (h,k) and radius r.",
+      "answer": "\\[(x-h)^2+(y-k)^2=r^2\\]The horizontal and vertical distances form the legs of a right triangle; the radius is the hypotenuse.",
+      "hint": "Use the distance to the centre and Pythagoras."
+    },
+    {
+      "id": "ellipse.screenshot",
+      "conceptID": "ellipse",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Find the full major and minor axis lengths of \\(x^2/4+y^2=1\\).",
+      "answer": "Major axis: 4, horizontal. Minor axis: 2, vertical. The half-lengths are √4=2 and √1=1.",
+      "hint": "Set y=0, then x=0, and find the endpoints."
+    },
+    {
+      "id": "ellipse.transfer",
+      "conceptID": "ellipse",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Find the full axis lengths and directions for \\(x^2/9+y^2/25=1\\).",
+      "answer": "Horizontal: 6. Vertical: 10. The major axis is vertical.",
+      "hint": "Take square roots, then double."
+    },
+    {
+      "id": "ellipse.recover",
+      "conceptID": "ellipse",
+      "revision": 1,
+      "kind": "Explain",
+      "prompt": "How can you recover the axis lengths of an origin-centred, axis-aligned ellipse without a memorised rule?",
+      "answer": "Set y=0 and solve for the two x endpoints. Their distance is the horizontal length. Then set x=0 for the vertical length.",
+      "hint": "Find where it crosses the coordinate axes."
+    },
+    {
+      "id": "ellipse.shift",
+      "conceptID": "ellipse",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Find the centre and radius of \\((x-3)^2+(y+2)^2=16\\).",
+      "answer": "Centre (3, −2), radius 4.",
+      "hint": "Match x−h, y−k, and r²."
+    },
+    {
+      "id": "measure.circumference",
+      "conceptID": "measure",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Give the circumference of a circle of radius r, and explain the factor 2.",
+      "answer": "\\[C=2\\pi r\\]Circumference is π times the diameter, and the diameter is 2r.",
+      "hint": "Start from the definition of π."
+    },
+    {
+      "id": "measure.area",
+      "conceptID": "measure",
+      "revision": 1,
+      "kind": "Derive",
+      "prompt": "How does cutting a circle into thin sectors explain its area?",
+      "answer": "Alternating thin sectors approach a shape with base πr and height r, giving \\(A=\\pi r^2\\).",
+      "hint": "The base is half the circumference."
+    },
+    {
+      "id": "measure.ellipse",
+      "conceptID": "measure",
+      "revision": 1,
+      "kind": "Derive",
+      "prompt": "Why is an ellipse’s area πab when a and b are its half-axis lengths?",
+      "answer": "A unit circle has area π. Horizontal stretch a and vertical stretch b multiply area by ab.",
+      "hint": "Think of stretching the unit circle in two directions."
+    },
+    {
+      "id": "conics.parabola",
+      "conceptID": "conics",
+      "revision": 1,
+      "kind": "Derive",
+      "prompt": "Derive x²=4py from a focus (0,p) and directrix y=−p.",
+      "answer": "\\[x^2+(y-p)^2=(y+p)^2\\]Expand and cancel y² and p² to obtain x²=4py.",
+      "hint": "Equate the squared distances to the focus and directrix."
+    },
+    {
+      "id": "conics.hyperbola",
+      "conceptID": "conics",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "For \\(x^2/a^2-y^2/b^2=1\\), give the vertices and asymptotes.",
+      "answer": "Vertices: \\((\\pm a,0)\\). Asymptotes: \\(y=\\pm(b/a)x\\).",
+      "hint": "Set y=0 for vertices. Drop the constant 1 to find the asymptote directions."
+    },
+    {
+      "id": "conics.classify",
+      "conceptID": "conics",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "How do the standard axis-aligned equations distinguish an ellipse, a hyperbola, and a parabola?",
+      "answer": "Ellipse: two positive squared terms summing to 1. Hyperbola: squared terms with opposite signs and a nonzero constant. Parabola: one coordinate squared, the other linear. These checks assume nondegenerate standard forms.",
+      "hint": "Look at the squared terms and their signs."
+    },
+    {
+      "id": "divisibility.read",
+      "conceptID": "divisibility",
+      "revision": 1,
+      "kind": "Notation",
+      "prompt": "What does \\(3\\mid18\\) mean, and is it true?",
+      "answer": "It means “3 divides 18”. It is true because 18=3×6, with integer multiplier 6 and no remainder.",
+      "hint": "The number on the left is the proposed divisor."
+    },
+    {
+      "id": "divisibility.definition",
+      "conceptID": "divisibility",
+      "revision": 1,
+      "kind": "Explain",
+      "prompt": "Express \\(a\\mid b\\) using multiplication and an integer.",
+      "answer": "\\[b=ak\\text{ for some integer }k.\\]",
+      "hint": "Which number must be an integer multiple of the other?"
+    },
+    {
+      "id": "divisibility.direction",
+      "conceptID": "divisibility",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Is \\(18\\mid3\\) true? Explain.",
+      "answer": "False. There is no integer k for which 3=18k. The direction matters.",
+      "hint": "Read it as “18 divides 3”."
+    },
+    {
+      "id": "divisibility.not",
+      "conceptID": "divisibility",
+      "revision": 1,
+      "kind": "Notation",
+      "prompt": "What does \\(3\\nmid19\\) mean?",
+      "answer": "3 does not divide 19. Division by 3 leaves remainder 1: 19=3×6+1.",
+      "hint": "The crossed bar negates “divides”."
+    },
+    {
+      "id": "divisibility.slash",
+      "conceptID": "divisibility",
+      "revision": 1,
+      "kind": "Explain",
+      "prompt": "How do \\(3\\mid18\\) and \\(3/18\\) differ?",
+      "answer": "\\(3\\mid18\\) is a true statement: 18 is an integer multiple of 3. The fraction \\(3/18=1/6\\) is a number.",
+      "hint": "One makes a claim; the other denotes a number."
+    },
+    {
+      "id": "logic.or",
+      "conceptID": "logic",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Is “\\(3\\mid18\\) or 11 is not prime” true? Explain.",
+      "answer": "True. The first part is true and the second is false. Inclusive “or” requires at least one true part.",
+      "hint": "Evaluate each part before combining them."
+    },
+    {
+      "id": "logic.both",
+      "conceptID": "logic",
+      "revision": 1,
+      "kind": "Explain",
+      "prompt": "When is a mathematical “P or Q” statement false?",
+      "answer": "Only when both P and Q are false. If both are true, inclusive “or” is still true.",
+      "hint": "Does “or” mean at least one, or exactly one?"
+    },
+    {
+      "id": "cubes.difference",
+      "conceptID": "cubes",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Factor \\(a^3-b^3\\).",
+      "answer": "\\[(a-b)(a^2+ab+b^2)\\]",
+      "hint": "The first factor keeps the minus sign. The quadratic has +ab and +b²."
+    },
+    {
+      "id": "cubes.sum",
+      "conceptID": "cubes",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Factor \\(a^3+b^3\\).",
+      "answer": "\\[(a+b)(a^2-ab+b^2)\\]",
+      "hint": "The first factor keeps the plus sign. The quadratic has −ab and +b²."
+    },
+    {
+      "id": "cubes.derive-difference",
+      "conceptID": "cubes",
+      "revision": 1,
+      "kind": "Derive",
+      "prompt": "Explain why (a−b)(a²+ab+b²) equals a³−b³.",
+      "answer": "Multiply the quadratic by a, then by −b:\\[a^3+a^2b+ab^2\\]\\[-a^2b-ab^2-b^3.\\]Add. Both pairs of mixed terms cancel, leaving a³−b³.",
+      "hint": "Use the distributive law and look for opposite mixed terms."
+    },
+    {
+      "id": "cubes.derive-sum",
+      "conceptID": "cubes",
+      "revision": 1,
+      "kind": "Derive",
+      "prompt": "Derive the sum-of-cubes factors from the difference-of-cubes identity.",
+      "answer": "Replace b by −b. Then \\(a^3-(-b)^3=a^3+b^3\\), and the factors become \\((a+b)(a^2-ab+b^2)\\).",
+      "hint": "An odd power of −b is negative; an even power is positive."
+    },
+    {
+      "id": "cubes.screenshot-factor",
+      "conceptID": "cubes",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Factor \\(x^3-27\\).",
+      "answer": "\\[(x-3)(x^2+3x+9)\\]Here 27=3³, so a=x and b=3.",
+      "hint": "First write 27 as a cube."
+    },
+    {
+      "id": "cubes.transfer",
+      "conceptID": "cubes",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Factor \\(8x^3+125\\).",
+      "answer": "\\[(2x+5)(4x^2-10x+25)\\]Use a=2x and b=5.",
+      "hint": "Both 8x³ and 125 are cubes. Square all of 2x for the quadratic’s first term."
+    },
+    {
+      "id": "cubes.simplify",
+      "conceptID": "cubes",
+      "revision": 1,
+      "kind": "Apply",
+      "prompt": "Simplify \\(\\frac{(x+3)(x^3-27)}{x^2-9}\\) and state the excluded values.",
+      "answer": "\\[x^2+3x+9,\\qquad x\\ne3,-3\\]Factor x³−27 and x²−9, then cancel the common whole factors x−3 and x+3.",
+      "hint": "Check the original denominator before cancelling."
+    },
+    {
+      "id": "cubes.domain",
+      "conceptID": "cubes",
+      "revision": 1,
+      "kind": "Explain",
+      "prompt": "After cancelling a factor x−3 from a fraction, can you automatically allow x=3 in the original expression?",
+      "answer": "No. If x=3 made the original denominator zero, the original expression remains undefined there. The simplified expression agrees only on the original domain.",
+      "hint": "Cancelling does not change which values were allowed at the start."
+    },
+    {
+      "id": "cubes.distinguish",
+      "conceptID": "cubes",
+      "revision": 1,
+      "kind": "Explain",
+      "prompt": "How do \\(a^3+b^3\\) and \\((a+b)^3\\) differ?",
+      "answer": "The first adds two cubes. The second cubes the whole sum:\\[(a+b)^3=a^3+3a^2b+3ab^2+b^3.\\]For a=b=1, they are 2 and 8 respectively.",
+      "hint": "Parentheses change what the exponent applies to."
+    }
+  ]
+}
