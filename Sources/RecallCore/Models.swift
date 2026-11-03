@@ -105,8 +105,7 @@ public struct Library: Codable, Sendable {
         .init(
             algorithm: "FSRS-6", implementation: "swift-fsrs@4fbaf20184d62f82a9f44f343337c61a2c5483e9",
             retention: 0.9, weights: FSRSDefaults.defaultWv6,
-            learningSteps: FSRSDefaults.defaultLearningSteps,
-            relearningSteps: FSRSDefaults.defaultRelearningSteps)
+            learningSteps: [], relearningSteps: [])
     }
     public var scheduler: FSRS {
         let settings = schedulerSettings

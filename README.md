@@ -91,8 +91,18 @@ Export a full backup before moving phones. Restoring replaces the current librar
 after a preview and keeps a local recovery copy first. The old `library.json`
 migrates without deleting the original. There is no iCloud sync.
 
-Scheduling uses vendored Swift FSRS-6 with 21 default weights, 90% retention,
-and the default learning steps. Personal parameter fitting is not included.
+Scheduling uses vendored Swift FSRS-6 with 21 default weights and a 90% recall
+target. Learning and relearning step lists are empty: FSRS calculates the next
+interval for Again, Hard, Good and Easy. Again means failed recall; Hard means a
+correct answer with effort, Good means normal recall, and Easy means effortless
+recall. Use Again when you forgot, rather than Hard.
+
+The current Swift implementation rounds model intervals to whole days, with a
+one-day minimum. This is a library rule, not a claim that a day is optimal for
+every card. Short-term memory calculations remain enabled. Existing due dates,
+learning progress and historical snapshots stay intact; the new settings apply
+when a card is next rated. Old snapshots retain the settings used at the time.
+Personal parameter fitting is not included.
 
 ## Build and check
 
@@ -125,8 +135,8 @@ retired authoring code keep their upstream/historical style. The lint step runs
 on every Xcode build and fails if its pinned tool is missing. `Scripts/check.sh`
 runs lint, warning-free core tests, equation checks, the WebKit renderer check,
 and an unsigned iOS build. GitHub Actions runs the same command with a pinned
-SwiftLint download and verified checksum. The workflow is configured but has not
-run in GitHub in this workspace. CI uses GitHub's [Xcode 27 runner](https://github.com/actions/runner-images/issues/14404)
+SwiftLint download and verified checksum on pushes and pull requests.
+CI uses GitHub's [Xcode 27 runner](https://github.com/actions/runner-images/issues/14404)
 and selects its [Xcode 27.2 installation](https://github.com/actions/runner-images/blob/main/images/macos/xcode-27-arm64-Readme.md).
 The linter checksum comes from the [official SwiftLint 0.65.1 assets](https://github.com/realm/SwiftLint/releases/expanded_assets/0.65.1).
 

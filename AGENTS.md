@@ -118,8 +118,13 @@ Only departing actions should send the card off-screen; flipping keeps it in pla
   Restoring does not insert cards into a session already in progress.
 - A full backup restore replaces the library after a preview and recovery copy.
   Preserve the original `library.json` when migrating it to SQLite.
-- Keep the vendored FSRS defaults unless the task calls for a scheduling change.
-  Current defaults use 21 weights and 90% retention; personal fitting is absent.
+- Use FSRS-6 with its 21 default weights and 90% retention. Learning and relearning
+  step lists are empty so FSRS calculates intervals for all four ratings. Keep
+  short-term memory calculations enabled. Do not add fixed minute steps or a
+  custom interval sequence. The vendored implementation currently rounds model
+  intervals to whole days with a one-day minimum; personal fitting is absent.
+  Preserve existing due dates and historical settings when changing the scheduler;
+  apply current settings when a card is next rated.
 
 ## Math, diagrams, and generated files
 
