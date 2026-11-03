@@ -1,0 +1,51 @@
+included:
+  - App
+  - Sources/RecallCore
+excluded:
+  - App/Resources
+strict: true
+# swift-format owns layout. SwiftLint owns correctness and unsafe constructs.
+only_rules:
+  - blanket_disable_command
+  - closing_brace
+  - compiler_protocol_init
+  - contains_over_first_not_nil
+  - discouraged_direct_init
+  - duplicate_conditions
+  - duplicate_enum_cases
+  - duplicate_imports
+  - empty_count
+  - empty_string
+  - empty_enum_arguments
+  - fallthrough
+  - force_cast
+  - force_try
+  - force_unwrapping
+  - identical_operands
+  - implicitly_unwrapped_optional
+  - inclusive_language
+  - invalid_swiftlint_command
+  - legacy_random
+  - no_fallthrough_only
+  - redundant_discardable_let
+  - redundant_nil_coalescing
+  - implicit_optional_initialization
+  - return_arrow_whitespace
+  - shorthand_operator
+  - superfluous_disable_command
+  - syntactic_sugar
+  - unavailable_function
+  - unneeded_break_in_switch
+  - unused_closure_parameter
+  - unused_control_flow_label
+  - unused_enumerated
+  - unused_optional_binding
+  - void_return
+  - custom_rules
+custom_rules:
+  concurrency_escape_hatch:
+    name: Unchecked concurrency escape
+    regex: '@unchecked\s+Sendable|@preconcurrency|nonisolated\s*\(\s*unsafe\s*\)'
+    match_kinds: [attribute.builtin, keyword, identifier, typeidentifier]
+    message: Model isolation and Sendable explicitly instead of bypassing compiler checks.
+    severity: error
