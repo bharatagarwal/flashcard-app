@@ -1,0 +1,3 @@
+\begin{tikzpicture}[>=Stealth,font=\normalsize]
+\begin{scope}[shift={(-2.6,0)},scale=.65]\draw[main] (0,0) ellipse(1.3 and .8);\node[below] at(0,-1.6) {$+x^2,+y^2$};\node[above] at(0,1.4) {ellipse};\end{scope}\begin{scope}[scale=.65]\foreach \s in {-1,1}{\draw[main,domain=-1:1,samples=40] plot({\s*.6*cosh(\x)},{.7*sinh(\x)});}\node[below] at(0,-1.6) {$+x^2,-y^2$};\node[above] at(0,1.4) {hyperbola};\end{scope}\begin{scope}[shift={(2.6,0)},scale=.65]\draw[main,domain=-1.2:1.2,samples=40] plot(\x,{\x*\x-.7});\node[below] at(0,-1.6) {$x^2,\ y$};\node[above] at(0,1.4) {parabola};\end{scope}
+\end{tikzpicture}

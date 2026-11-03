@@ -1,0 +1,186 @@
+[
+  {
+    "id": "angles.sin",
+    "alt": "A vector is split into two rotated components. The two vertical contributions stack to form the sine of the total angle."
+  },
+  {
+    "id": "angles.cos",
+    "alt": "The first rotated component moves right; the second moves left. Their signed horizontal displacements give cosine of the sum."
+  },
+  {
+    "id": "angles.rotation",
+    "alt": "Rotating the upward vector counterclockwise moves its tip left. Its horizontal component is minus sine b."
+  },
+  {
+    "id": "angles.subtract",
+    "alt": "Points at b and minus b reflect across the horizontal axis: cosine stays the same and sine changes sign."
+  },
+  {
+    "id": "angles.double",
+    "alt": "Two successive rotations by x produce a total rotation of two x."
+  },
+  {
+    "id": "derivatives.sin",
+    "alt": "Graph of sine with its tangent at zero. The tangent rises one unit for each unit to the right, matching cosine zero equals one."
+  },
+  {
+    "id": "derivatives.cos",
+    "alt": "Graph of cosine with tangent slope minus one at pi over two; cosine crosses zero while decreasing."
+  },
+  {
+    "id": "derivatives.limits",
+    "alt": "The inner triangle lies inside the unit circle sector, which lies inside the triangle formed by the tangent at one zero. Their areas squeeze sine h over h."
+  },
+  {
+    "id": "derivatives.derive",
+    "alt": "Two points on sine define a secant. A right triangle marks horizontal change h and vertical change delta y; their ratio approaches the tangent slope."
+  },
+  {
+    "id": "derivatives.cycle",
+    "alt": "Four derivative arrows form a cycle: sine, cosine, negative sine, negative cosine, then sine again."
+  },
+  {
+    "id": "derivatives.notation",
+    "alt": "A chain differentiates x squared four times: two x, two, zero, zero. It shows the superscript four counting operations."
+  },
+  {
+    "id": "derivatives.chain",
+    "alt": "Two linked changes: x to three x, with rate three, then the angle to its sine, with rate cosine. The rates multiply."
+  },
+  {
+    "id": "logs.fourth",
+    "alt": "Two columns show all four derivatives. The final highlighted row contains sine x and minus six x to the minus four."
+  },
+  {
+    "id": "logs.power",
+    "alt": "The coefficient and exponent follow separate branches: minus one times minus two gives two, while minus two minus one gives minus three."
+  },
+  {
+    "id": "logs.general",
+    "alt": "The first logarithm derivative produces x to the minus one. Each further step adds the next negative integer factor, explaining the factorial and alternating signs."
+  },
+  {
+    "id": "sets.meaning",
+    "alt": "Only the part of X outside Y is shaded. The overlap and the right-only part are unshaded."
+  },
+  {
+    "id": "sets.example",
+    "alt": "X contains one and three in its left-only region and two in the overlap. Y contains four in its right-only region. Only one and three are shaded."
+  },
+  {
+    "id": "sets.reverse",
+    "alt": "The same sets are shown, but only the right-only region of Y, containing four, is shaded."
+  },
+  {
+    "id": "sets.self",
+    "alt": "All three sample elements in X are crossed out when X is removed from itself. The output is the empty set."
+  },
+  {
+    "id": "ellipse.circle",
+    "alt": "A radius from the centre h k to a point x y forms a right triangle with horizontal distance x minus h and vertical distance y minus k."
+  },
+  {
+    "id": "ellipse.screenshot",
+    "alt": "The ellipse has horizontal intercepts minus two and two, vertical intercepts minus one and one, and dimension arrows marking full width four and height two."
+  },
+  {
+    "id": "ellipse.transfer",
+    "alt": "A tall ellipse has horizontal intercepts plus and minus three and vertical intercepts plus and minus five. Dimension arrows show six across and ten vertically."
+  },
+  {
+    "id": "ellipse.recover",
+    "alt": "The four axis intercepts of a general ellipse are labelled minus a zero, a zero, zero b, and zero minus b."
+  },
+  {
+    "id": "ellipse.shift",
+    "alt": "A shifted circle is centred at three minus two. A horizontal radius of four reaches seven minus two. Dashed projections locate the centre."
+  },
+  {
+    "id": "measure.circumference",
+    "alt": "A circle diameter is split at the centre into two equal radii. An arrow leads to circumference equals pi times diameter."
+  },
+  {
+    "id": "measure.area",
+    "alt": "A circle is cut into twelve sectors. Alternating upward and downward sectors form a strip with curved edges; in the limit its base tends to pi r and its height to r."
+  },
+  {
+    "id": "measure.ellipse",
+    "alt": "A unit circle on a square grid is stretched into an ellipse on a rectangular grid. A highlighted grid cell shows horizontal and vertical scale factors multiplying area."
+  },
+  {
+    "id": "conics.parabola",
+    "alt": "An upward parabola has focus above the origin and a horizontal directrix below it. A point on the curve has two equal marked distances: to the focus and straight down to the directrix."
+  },
+  {
+    "id": "conics.hyperbola",
+    "alt": "The two hyperbola branches open left and right from vertices plus and minus a. Diagonals through a rectangle of half-width a and half-height b show the asymptote slopes."
+  },
+  {
+    "id": "conics.classify",
+    "alt": "Three standard conics are compared: a closed ellipse from a sum of squares, a two-branch hyperbola from a difference of squares, and a parabola from one squared and one linear coordinate."
+  },
+  {
+    "id": "divisibility.read",
+    "alt": "Eighteen dots form six complete boxes of three, with no leftover dot. This witnesses three divides eighteen."
+  },
+  {
+    "id": "divisibility.definition",
+    "alt": "Multiples of a appear at equally spaced marked positions on a number line, illustrating that an integer number of steps of size a reaches a divisible number. The sketch assumes positive a."
+  },
+  {
+    "id": "divisibility.direction",
+    "alt": "On a number line, three lies only one sixth of the way from zero to eighteen. It cannot be reached by an integer number of eighteen-unit steps."
+  },
+  {
+    "id": "divisibility.not",
+    "alt": "Six boxes contain three dots each, accounting for eighteen dots. A separate highlighted nineteenth dot remains outside the boxes."
+  },
+  {
+    "id": "divisibility.slash",
+    "alt": "Two branches distinguish notation: three divides eighteen evaluates to true, while the fraction three over eighteen evaluates to one sixth."
+  },
+  {
+    "id": "logic.or",
+    "alt": "The true divisibility claim and false claim that eleven is not prime feed an OR operation, whose output is true."
+  },
+  {
+    "id": "logic.both",
+    "alt": "A four-row truth table for inclusive OR highlights the false-false row, the only row whose result is false."
+  },
+  {
+    "id": "cubes.difference",
+    "alt": "Two product rows align positive and negative mixed terms. Highlighted pairs cancel, leaving a cubed minus b cubed."
+  },
+  {
+    "id": "cubes.sum",
+    "alt": "Aligned product rows for the sum of cubes cancel the opposite mixed terms and leave positive endpoint cubes."
+  },
+  {
+    "id": "cubes.derive-difference",
+    "alt": "Rows labelled multiplication by a and by negative b show all six products. Opposite mixed terms cancel in matched columns."
+  },
+  {
+    "id": "cubes.derive-sum",
+    "alt": "A substitution diagram changes b to negative b in the difference identity, then simplifies to the sum-of-cubes factors."
+  },
+  {
+    "id": "cubes.screenshot-factor",
+    "alt": "A vertical substitution diagram rewrites twenty-seven as three cubed, inserts x and three into the identity, and simplifies the quadratic terms."
+  },
+  {
+    "id": "cubes.transfer",
+    "alt": "The bases two x and five are substituted into the sum-of-cubes identity. Each squared and mixed term is evaluated explicitly."
+  },
+  {
+    "id": "cubes.simplify",
+    "alt": "The factorised fraction marks the same product in numerator and denominator. The result retains the exclusions x not equal to plus or minus three."
+  },
+  {
+    "id": "cubes.domain",
+    "alt": "The graph is a horizontal line at height one with an open circle at x equals three. The missing point shows the domain restriction survives cancellation."
+  },
+  {
+    "id": "cubes.distinguish",
+    "alt": "Two separate unit cubes have total volume two. Beside them, a cube of side two is divided by three midplanes into eight unit cubes, showing the extra volume when the sum is cubed."
+  }
+]

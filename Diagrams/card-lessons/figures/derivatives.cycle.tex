@@ -1,0 +1,3 @@
+\begin{tikzpicture}[>=Stealth,font=\normalsize]
+\node[box] (s) at(0,1.3) {$\sin x$};\node[box] (c) at(2,0) {$\cos x$};\node[box] (ns) at(0,-1.3) {$-\sin x$};\node[box] (nc) at(-2,0) {$-\cos x$};\draw[main,->] (s)--(c) node[midway,above right] {$D$};\draw[main,->] (c)--(ns) node[midway,below right] {$D$};\draw[main,->] (ns)--(nc) node[midway,below left] {$D$};\draw[main,->] (nc)--(s) node[midway,above left] {$D$};
+\end{tikzpicture}

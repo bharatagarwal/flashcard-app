@@ -1,0 +1,6 @@
+\begin{tikzpicture}[>=Stealth,font=\normalsize]
+\draw[axis,->] (-1.3,0)--(3.2,0) node[right] {$x$};\draw[axis,->] (0,-.3)--(0,3) node[above] {$y$};
+\coordinate(O) at(0,0);\coordinate(U) at(2.45,1.15);\coordinate(V) at(-.65,1.38);\coordinate(P) at(1.8,2.53);
+\draw[main,->] (O)--(U) node[midway,below right] {$\cos a$};\draw[accent,->] (U)--(P);
+\draw[axis,dashed] (O)--(V);\draw[axis,dashed] (V)--(P);\draw[main,->] (O)--(P);\draw[axis] (.5,0) arc(0:25:.5);\node at(.72,.16) {$b$};\draw[accent,<->] (2.95,0)--(2.95,1.15) node[midway,right] {$\cos a\sin b$};\draw[accent,<->] (2.95,1.15)--(2.95,2.53) node[midway,right] {$\sin a\cos b$};
+\end{tikzpicture}

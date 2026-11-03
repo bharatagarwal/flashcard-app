@@ -1,0 +1,30 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{amsmath}
+\usetikzlibrary{arrows.meta,calc}
+\begin{document}
+\ifdefined\RecurDark
+\definecolor{ink}{RGB}{109,190,151}
+\definecolor{textink}{RGB}{229,235,230}
+\definecolor{axisink}{RGB}{147,164,153}
+\definecolor{figurefill}{RGB}{33,54,42}
+\else
+\definecolor{ink}{RGB}{40,99,77}
+\definecolor{textink}{RGB}{34,42,37}
+\definecolor{axisink}{RGB}{114,126,118}
+\definecolor{figurefill}{RGB}{231,240,233}
+\fi
+\begin{tikzpicture}[scale=2.1,>=Stealth,text=textink]
+\draw[->,axisink] (-1.25,0)--(1.35,0) node[right] {$x$};
+\draw[->,axisink] (0,-1.2)--(0,1.3) node[above] {$y$};
+\draw[ink,thick] (0,0) circle (1);
+\coordinate (P) at ({cos(50)},{sin(50)});
+\fill[fill=figurefill] (0,0)--({cos(50)},0)--(P)--cycle;
+\draw[ink,very thick] (0,0)--(P) node[midway,above left] {$1$};
+\draw[ink,thick] (0,0)--({cos(50)},0) node[midway,below] {$\cos\theta$};
+\draw[ink,thick] ({cos(50)},0)--(P) node[midway,right] {$\sin\theta$};
+\draw[ink,->] (.28,0) arc[start angle=0,end angle=50,radius=.28];
+\node at (25:.40) {$\theta$};
+\fill[ink] (P) circle (.025);
+\node[above right] at (P) {$P=(\cos\theta,\sin\theta)$};
+\end{tikzpicture}
+\end{document}
