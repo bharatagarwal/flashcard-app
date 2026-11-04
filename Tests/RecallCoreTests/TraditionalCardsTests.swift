@@ -13,7 +13,7 @@ private func traditionalDeck(_ path: String = "App/Resources/starter.json") thro
     let deck = try traditionalDeck()
     try deck.validate()
     let active = deck.cards.filter { !$0.isArchived }
-    #expect(active.count == 55)
+    #expect(active.count == 59)
     #expect(deck.cards.filter(\.isArchived).count == 15)
     #expect(deck.assets?.isEmpty != false)
     for card in active {

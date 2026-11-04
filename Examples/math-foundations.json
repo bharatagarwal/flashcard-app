@@ -247,6 +247,50 @@
       "change": "wording"
     },
     {
+      "id": "derivatives.product-rule",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.product-rule",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "For differentiable functions \\(u(x)\\) and \\(v(x)\\), complete: \\(\\displaystyle\\frac{d}{dx}[uv]=\\ ?\\)",
+      "answer": "\\[u\\,v^{\\prime}+v\\,u^{\\prime}\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.quotient-rule",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.quotient-rule",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "For differentiable functions \\(u(x)\\) and \\(v(x)\\), with \\(v(x)\\ne0\\), complete: \\(\\displaystyle\\frac{d}{dx}\\!\\left[\\frac uv\\right]=\\ ?\\)",
+      "answer": "\\[\\frac{v\\,u^{\\prime}-u\\,v^{\\prime}}{v^2}\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.product-example",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.product-example",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\(x^2\\sin x\\), with \\(x\\) in radians.",
+      "answer": "\\[2x\\sin x+x^2\\cos x\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.quotient-example",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.quotient-example",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\(\\displaystyle\\frac{x}{x^2+1}\\).",
+      "answer": "\\[\\frac{1-x^2}{(x^2+1)^2}\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
       "id": "derivatives.sine-limit",
       "conceptID": "derivatives",
       "objectiveID": "derivatives.sine-limit",
