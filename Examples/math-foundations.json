@@ -291,6 +291,61 @@
       "change": "explanation"
     },
     {
+      "id": "derivatives.exponential-e",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.exponential-e",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\(e^x\\).",
+      "answer": "\\[e^x\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.exponential-base",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.exponential-base",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\(a^x\\), where \\(a>0\\) is constant.",
+      "answer": "\\[a^x\\ln a\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.exponential-two",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.exponential-two",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\(2^x\\).",
+      "answer": "\\[2^x\\ln 2\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.exponential-chain",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.exponential-chain",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\(a^{g(x)}\\), where \\(a>0\\) is constant and \\(g\\) is differentiable.",
+      "answer": "\\[a^{g(x)}\\ln a\\;g^{\\prime}(x)\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.exponential-quotient",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.exponential-quotient",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\(\\displaystyle\\frac{x}{2^x}\\).",
+      "answer": "\\[\\frac{1-x\\ln 2}{2^x}\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
       "id": "derivatives.sine-limit",
       "conceptID": "derivatives",
       "objectiveID": "derivatives.sine-limit",
