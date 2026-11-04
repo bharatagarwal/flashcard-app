@@ -12,7 +12,7 @@ then completes the matching token; screen changes cancel it. Reduce Motion uses 
 the content snapshot, and the remaining queue happens in one SQLite transaction.
 A failed save returns to the answer for retry.
 
-The starter collection has **64 active cards across ten topics**. Each card asks
+The starter collection has **70 active cards across ten topics**. Each card asks
 one focused question with a short answer. There are no topic lessons, hints, or
 explanation panels. The Library lets you search questions, tap to flip either side,
 edit answers, and inspect past reviews. Reviews and browsing share the same lift,

@@ -14,7 +14,7 @@ private let now = Date(timeIntervalSince1970: 1_800_000_000)
 @Test func starterIsValidAndHasTheRequiredTopics() throws {
     let deck = try starter()
     try deck.validate()
-    #expect(deck.cards.filter { !$0.isArchived }.count == 64)
+    #expect(deck.cards.filter { !$0.isArchived }.count == 70)
     #expect(deck.concepts.count == 10)
     #expect(deck.concepts.allSatisfy { $0.sourceImage == nil })
     #expect(deck.concepts.allSatisfy { $0.sections?.isEmpty != false })

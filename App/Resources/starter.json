@@ -346,6 +346,72 @@
       "change": "explanation"
     },
     {
+      "id": "derivatives.chain-inner-outer",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.chain-inner-outer",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "In \\(y=(3x+1)^2\\), identify the inner function \\(u(x)\\) and outer function \\(f(u)\\).",
+      "answer": "Inner: \\(u(x)=3x+1\\). Outer: \\(f(u)=u^2\\).",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.chain-rule",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.chain-rule",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "If \\(y=f(u)\\) and \\(u=g(x)\\) are differentiable, give \\(\\displaystyle\\frac{dy}{dx}\\).",
+      "answer": "\\[\\frac{dy}{dx}=\\frac{dy}{du}\\frac{du}{dx}=f^{\\prime}(g(x))g^{\\prime}(x)\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.chain-rates",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.chain-rates",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "At a point, \\(\\displaystyle\\frac{du}{dx}=3\\) and \\(\\displaystyle\\frac{dy}{du}=5\\). What is \\(\\displaystyle\\frac{dy}{dx}\\)?",
+      "answer": "\\[5\\times3=15\\]\\(y\\) changes about \\(15\\) times as much as a small change in \\(x\\).",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.chain-why-multiply",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.chain-why-multiply",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Why does the chain rule multiply the outer derivative by the inner derivative?",
+      "answer": "The outer derivative measures change per unit of the inner input. The inner derivative measures how fast that input changes with \\(x\\). Multiply to get change per unit of \\(x\\).",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.chain-exponential",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.chain-exponential",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\(e^{g(x)}\\), where \\(g\\) is differentiable.",
+      "answer": "\\[e^{g(x)}g^{\\prime}(x)\\]The factor \\(g^{\\prime}(x)\\) accounts for how fast the exponent changes.",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
+      "id": "derivatives.chain-square-example",
+      "conceptID": "derivatives",
+      "objectiveID": "derivatives.chain-square-example",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "Differentiate \\((3x+1)^2\\).",
+      "answer": "\\[2(3x+1)\\cdot3=6(3x+1)\\]",
+      "hint": "",
+      "change": "explanation"
+    },
+    {
       "id": "derivatives.sine-limit",
       "conceptID": "derivatives",
       "objectiveID": "derivatives.sine-limit",
