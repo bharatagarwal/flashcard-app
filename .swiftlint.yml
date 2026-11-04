@@ -1,6 +1,7 @@
 included:
   - App
   - Sources/RecallCore
+  - Sources/RecallMath
 excluded:
   - App/Resources
 strict: true

@@ -175,8 +175,8 @@ struct SettingsView: View {
                     if let url = URL(string: "https://github.com/open-spaced-repetition/swift-fsrs") {
                         Link("Swift FSRS · MIT", destination: url)
                     }
-                    if let url = URL(string: "https://github.com/KaTeX/KaTeX") {
-                        Link("KaTeX · MIT", destination: url)
+                    if let url = URL(string: "https://github.com/gonzalezreal/swiftui-math") {
+                        Link("SwiftUIMath · MIT", destination: url)
                     }
                     NavigationLink("Licences") {
                         ScrollView { Text(licences).font(.footnote).padding() }.navigationTitle("Licences")
@@ -188,7 +188,7 @@ struct SettingsView: View {
     var licences: String {
         guard let url = Bundle.main.url(forResource: "ThirdPartyLicenses", withExtension: "txt"),
             let text = try? String(contentsOf: url, encoding: .utf8)
-        else { return "See the bundled FSRS and KaTeX licences in the source project." }
+        else { return "See the bundled FSRS and SwiftUIMath licences in the source project." }
         return text
     }
 }

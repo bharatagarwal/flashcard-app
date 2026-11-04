@@ -14,5 +14,5 @@ if [ "$recur_actual" != "$recur_expected" ]; then
     echo "error: SwiftLint $recur_expected is required; found $recur_actual." >&2
     exit 1
 fi
-xcrun swift format lint --strict --recursive App Sources/RecallCore Tests/RecallCoreTests Scripts Package.swift
+xcrun swift format lint --strict --recursive App Sources/RecallCore Sources/RecallMath Tests/RecallCoreTests Tests/RecallMathTests Tools Scripts Package.swift
 swiftlint lint --strict --quiet --no-cache

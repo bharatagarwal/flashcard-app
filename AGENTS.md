@@ -29,9 +29,10 @@ The display name is **Recur**. Keep the internal project and target name
 | `Tests/Fixtures/` | Old decks retained to test compatibility |
 | `Scripts/make_starter.py` | Source for the starter deck and example card files |
 | `App/Resources/starter.json`, `Examples/` | Generated card files |
-| `App/Resources/Math/` | Bundled KaTeX, fonts, and rendering page |
+| `Sources/RecallMath/` | Native mixed text/math layout, delimiter parsing, and VoiceOver math |
+| `App/Resources/Math/` | KaTeX for authoring validation only; excluded from the app |
 | `Schemas/` | JSON exchange format and its documentation |
-| `Vendor/swift-fsrs/` | Vendored scheduler; see `Vendor/README.md` |
+| `Vendor/swift-fsrs/`, `Vendor/swiftui-math/` | Pinned scheduler and native math renderer; see `Vendor/README.md` |
 | `Design/` | Icon source, prompt, preview, and old artwork |
 | `Archive/lesson-authoring/` | Retired lesson tools; not part of the starter build |
 | `project.yml` | XcodeGen source for `MathRecall.xcodeproj` |
@@ -135,9 +136,17 @@ python3 Scripts/make_starter.py
 node Scripts/check_math.cjs
 ```
 
-Use `\(...\)` for inline LaTeX and `\[...\]` for display math. `MathText` passes
-typed JSON to the bundled KaTeX page and assigns text through `textContent`.
-Do not interpret card content as HTML or add a network dependency for rendering.
+Use `\(...\)` for inline LaTeX and `\[...\]` for display math. `MathText` in
+`RecallMath` lays out native prose and SwiftUIMath equations.
+It aligns inline math with the text baseline, reserves a line for display math,
+and uses bounded native parse/layout caches plus a 16 MB screen-scale artwork
+cache. Display equations wrap at safe
+top-level equalities and list separators; indivisible wide formulas scale to fit.
+VoiceOver reads the whole text with spoken fractions, powers, and common symbols.
+Do not reintroduce web views, JavaScript, HTML interpretation, or network rendering.
+Keep card JSON and historical hashes unchanged when changing rendering.
+Run the native renderer check for new notation; unsupported imported math must
+show a readable error, never an empty card.
 
 If needed, compile TikZ outside the phone app into vector PDFs. Preserve
 transparency, supply suitable light/dark variants, and keep tap-to-zoom support.
@@ -168,7 +177,7 @@ xcrun swift format format --in-place App/LibraryView.swift Sources/RecallCore/Br
 Scripts/lint.sh             # Strict formatting and production-code lint
 Scripts/test.sh             # Core tests, with warnings as errors
 node Scripts/check_math.cjs # LaTeX validation
-swift Scripts/check_renderer.swift # Native WebKit checks at phone width, both themes
+swift Scripts/check_renderer.swift # Native SwiftUI checks at phone width, both themes
 Scripts/check.sh            # All of the above, then an unsigned generic iOS build
 ```
 

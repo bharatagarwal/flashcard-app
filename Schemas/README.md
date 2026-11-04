@@ -21,7 +21,7 @@ A block is one of:
 {"id":"figure","kind":"diagram","assetID":"sha256:<64 hex digits>"}
 ```
 
-Equation blocks contain raw KaTeX-compatible LaTeX, without delimiters. `display`
+Equation blocks contain raw math-mode LaTeX, without delimiters. `display`
 defaults to true. Text blocks also accept inline `\(...\)` and displayed
 `\[...\]` equations. Legacy `explanation` and `answer` strings remain readable
 fallbacks for exports, search, and old review records. `answerBlocks` can provide
@@ -56,8 +56,11 @@ are retained when merging so older content can still refer to them.
 
 This avoids ZIP extraction and separate file references for small mathematical
 figures. Screenshots are optional and are omitted from new starter exports.
-KaTeX is a mathematical LaTeX renderer, not a full LaTeX document engine; packages
-such as TikZ belong in the authoring/compilation step.
+SwiftUIMath renders mathematical LaTeX natively; it is not a full LaTeX document
+engine. Packages such as TikZ belong in the authoring/compilation step. The app
+keeps delimited text intact in storage and reports unsupported notation visibly.
+Run the native renderer check when adding notation; KaTeX remains an extra authoring
+syntax check and does not run in the app.
 
 ## Updates
 

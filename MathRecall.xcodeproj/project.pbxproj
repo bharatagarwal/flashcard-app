@@ -15,6 +15,7 @@
 		390F8827C4D212C26798CE34 /* MathRecallApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E40DCA67A231FF2B84D047 /* MathRecallApp.swift */; };
 		3C9F9905310D80E7E0B76175 /* DiagramViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BB598CE9D44553F888E91B /* DiagramViewer.swift */; };
 		44AB1AA104E9A74869ED1E58 /* starter.json in Resources */ = {isa = PBXBuildFile; fileRef = AEE21740A34AB9A99879EE8E /* starter.json */; };
+		63B244A8F8E5C56B937D4596 /* RecallMath in Frameworks */ = {isa = PBXBuildFile; productRef = 58B4314843024E63A077DAFC /* RecallMath */; };
 		6446797BA1202717845EB4F9 /* divisibility.png in Resources */ = {isa = PBXBuildFile; fileRef = 11B7F0E4EB8342D567BC75BE /* divisibility.png */; };
 		8F12367672BEF87238349C3F /* ellipse.png in Resources */ = {isa = PBXBuildFile; fileRef = AFE25A4663ECB95CA423C642 /* ellipse.png */; };
 		9149C919576F1CB7DE8A3BDC /* RecallCore in Frameworks */ = {isa = PBXBuildFile; productRef = 29DC3AF91960261094602C77 /* RecallCore */; };
@@ -26,7 +27,6 @@
 		C5BF2FB23EF1F30DE60DF598 /* sets.png in Resources */ = {isa = PBXBuildFile; fileRef = 4017F7814F514067ACE23DC6 /* sets.png */; };
 		D29167AA92F86161FD95A5EB /* derivatives.png in Resources */ = {isa = PBXBuildFile; fileRef = A366E7A18319B0FF2D05C0F2 /* derivatives.png */; };
 		D3482AFEFE76DFD86F4705FB /* MathText.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFAA941BAE21455F23895125 /* MathText.swift */; };
-		E179BFE8D6DEF959B389224A /* Math in Resources */ = {isa = PBXBuildFile; fileRef = EB22FD60A81CA99B2257E816 /* Math */; };
 		EAB54D94AABE44C5D6843809 /* LibraryCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9DA3B01F4A38C5063E27B67 /* LibraryCanvasView.swift */; };
 		FD3A5BA5087A086BDB183DE8 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BADDE8B8DCB5BCB474C371F /* AppModel.swift */; };
 /* End PBXBuildFile section */
@@ -53,7 +53,6 @@
 		DE561EF7DC25D469DBA54064 /* ThirdPartyLicenses.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ThirdPartyLicenses.txt; sourceTree = "<group>"; };
 		E6BB598CE9D44553F888E91B /* DiagramViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagramViewer.swift; sourceTree = "<group>"; };
 		E9DA3B01F4A38C5063E27B67 /* LibraryCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCanvasView.swift; sourceTree = "<group>"; };
-		EB22FD60A81CA99B2257E816 /* Math */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Math; path = App/Resources/Math; sourceTree = SOURCE_ROOT; };
 		EFAA941BAE21455F23895125 /* MathText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathText.swift; sourceTree = "<group>"; };
 		F2DF2F645F19B1C169315C6B /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -64,6 +63,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9149C919576F1CB7DE8A3BDC /* RecallCore in Frameworks */,
+				63B244A8F8E5C56B937D4596 /* RecallMath in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,7 +117,6 @@
 		6BD020810A056C729F0E2008 = {
 			isa = PBXGroup;
 			children = (
-				EB22FD60A81CA99B2257E816 /* Math */,
 				3805523B905B0F12FA3BD479 /* App */,
 				33BB946419856D93B900A474 /* Packages */,
 				43B76F445961E882941F5348 /* Resources */,
@@ -152,6 +151,7 @@
 			name = MathRecall;
 			packageProductDependencies = (
 				29DC3AF91960261094602C77 /* RecallCore */,
+				58B4314843024E63A077DAFC /* RecallMath */,
 			);
 			productName = MathRecall;
 			productReference = 447377060BF9B7F6AC290D23 /* MathRecall.app */;
@@ -200,7 +200,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A6A8DC9119EE46FF87EA235C /* Assets.xcassets in Resources */,
-				E179BFE8D6DEF959B389224A /* Math in Resources */,
 				BB927BFB00608D5A97B0681F /* ThirdPartyLicenses.txt in Resources */,
 				141DFAE1F992555E1EE08D61 /* cubes.png in Resources */,
 				D29167AA92F86161FD95A5EB /* derivatives.png in Resources */,
@@ -225,7 +224,10 @@
 			inputPaths = (
 				"$(SRCROOT)/App",
 				"$(SRCROOT)/Sources/RecallCore",
+				"$(SRCROOT)/Sources/RecallMath",
 				"$(SRCROOT)/Tests/RecallCoreTests",
+				"$(SRCROOT)/Tests/RecallMathTests",
+				"$(SRCROOT)/Tools",
 				"$(SRCROOT)/Scripts",
 				"$(SRCROOT)/Package.swift",
 				"$(SRCROOT)/.swift-format",
@@ -405,7 +407,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 19;
+				CURRENT_PROJECT_VERSION = 20;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -426,7 +428,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 19;
+				CURRENT_PROJECT_VERSION = 20;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -475,6 +477,10 @@
 		29DC3AF91960261094602C77 /* RecallCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RecallCore;
+		};
+		58B4314843024E63A077DAFC /* RecallMath */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RecallMath;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

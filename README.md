@@ -67,8 +67,12 @@ This creates the bundled starter and the JSON decks in `Examples`. Share a
 screenshot or the fact you forgot in our chat to create more front/back cards.
 Save the card file to Files, then open it in Recur or use Import.
 
-Math uses bundled KaTeX. Text accepts `\(...\)` for inline equations and `\[...\]`
-for display equations. A figure may be part of an answer when the actual question
+Math uses native SwiftUI text and Core Text equations through bundled SwiftUIMath.
+Parsed formulas, layouts, and transparent equation images use bounded in-memory caches.
+Equation images render natively at the screen scale, then reuse that artwork during
+scrolling and card turns. No web view, JavaScript, HTML document, or network request
+is involved in rendering. Text accepts `\(...\)` for inline equations and
+`\[...\]` for display equations. A figure may be part of an answer when the actual question
 requires it; the current starter has no figures. Optional diagram assets are
 compiled vector PDFs with transparent light/dark variants and tap-to-zoom support.
 No TeX engine or network service runs on the phone.
@@ -78,6 +82,9 @@ fields, figures, and snapshots. Those legacy lesson fields do not appear in the
 current app. See `Schemas/README.md` and `Schemas/deck-v2.schema.json`. Retired
 lesson-authoring scripts live in `Archive/lesson-authoring`; they are outside the
 starter build process.
+
+Unsupported imported LaTeX shows a readable rendering error rather than an empty
+card. The native renderer supports math notation, not full LaTeX documents.
 
 ## Your data
 
@@ -133,7 +140,7 @@ representation so archived review hashes do not change.
 There are no lint baselines or blanket suppressions. Vendored libraries and
 retired authoring code keep their upstream/historical style. The lint step runs
 on every Xcode build and fails if its pinned tool is missing. `Scripts/check.sh`
-runs lint, warning-free core tests, equation checks, the WebKit renderer check,
+runs lint, warning-free core tests, equation checks, the native renderer check,
 and an unsigned iOS build. GitHub Actions runs the same command with a pinned
 SwiftLint download and verified checksum on pushes and pull requests.
 CI uses GitHub's [Xcode 27 runner](https://github.com/actions/runner-images/issues/14404)
@@ -143,8 +150,8 @@ The linter checksum comes from the [official SwiftLint 0.65.1 assets](https://gi
 `project.yml` defines the Xcode project. Run `xcodegen generate` after changing
 its file layout. The tests cover legal review/flip transitions, failed saves,
 FSRS schedules, archive migration, legacy imports, snapshots, and database
-transactions. The WebKit check renders equations at a 291-point width in both
-themes. It does not replace a visual test on the phone.
+transactions. The native renderer check validates all starter formulas, renders at a 291-point
+width in both themes and two sizes, and prints timing measurements. It does not replace a visual test on the phone.
 
 ## Icon and dependencies
 
@@ -154,5 +161,6 @@ preview. `Design/IconPrompt.md` records the exact prompt and built-in generation
 tool used. The old spiral artwork remains in `Design/Archive`.
 
 - Swift FSRS (MIT), bundled snapshot documented in `Vendor/README.md`.
-- KaTeX (MIT), bundled with its fonts and licence.
+- SwiftUIMath (MIT), pinned native renderer and fonts documented in `Vendor/README.md`.
+- KaTeX (MIT), retained only for authoring validation; excluded from the app.
 - SwiftUI, SQLite, Core Graphics, and CryptoKit from Apple's SDKs.

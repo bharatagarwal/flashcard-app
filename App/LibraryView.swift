@@ -10,45 +10,48 @@ private struct CardListView: View {
     var archived = false
     @State private var search = ""
     @State private var showingCanvas = false
-    var cards: [Flashcard] {
-        (model.library?.deck.cards ?? []).filter {
+    private var groups: [(topic: Concept, cards: [Flashcard])] {
+        let concepts = model.library?.deck.concepts ?? []
+        let titles = Dictionary(uniqueKeysWithValues: concepts.map { ($0.id, $0.title) })
+        let matches = (model.library?.deck.cards ?? []).filter {
             $0.isArchived == archived
                 && (search.isEmpty
-                    || ($0.prompt + " " + $0.answer + " " + (model.concept(for: $0)?.title ?? ""))
+                    || ($0.prompt + " " + $0.answer + " " + (titles[$0.conceptID] ?? ""))
                         .localizedCaseInsensitiveContains(search))
         }
-    }
-    private var orderedCards: [Flashcard] {
-        (model.library?.deck.concepts ?? []).flatMap { topic in cards.filter { $0.conceptID == topic.id } }
+        let byTopic = Dictionary(grouping: matches, by: \.conceptID)
+        return concepts.compactMap { topic in
+            guard let cards = byTopic[topic.id], !cards.isEmpty else { return nil }
+            return (topic, cards)
+        }
     }
     var body: some View {
+        let groups = groups
+        let orderedIDs = groups.flatMap { $0.cards.map(\.id) }
         List {
-            if archived, !cards.isEmpty {
+            if archived, !orderedIDs.isEmpty {
                 Text("Archived cards stay out of reviews. Restore a card to return it to the Library.")
                     .font(.subheadline).foregroundStyle(.secondary).listRowBackground(Color.clear)
             }
-            ForEach(model.library?.deck.concepts ?? []) { topic in
-                let group = cards.filter { $0.conceptID == topic.id }
-                if !group.isEmpty {
-                    Section(topic.title) {
-                        ForEach(group) { card in
-                            NavigationLink {
-                                CardDetailView(cardID: card.id, cardIDs: orderedCards.map(\.id))
-                            } label: {
-                                MathText(card.prompt, pointSize: 18)
-                                    .allowsHitTesting(false).padding(.vertical, 10)
-                            }.listRowBackground(Palette.surface)
-                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                    Button(
-                                        archived ? "Restore to Library" : "Archive",
-                                        systemImage: archived ? "tray.and.arrow.up" : "archivebox"
-                                    ) {
-                                        do {
-                                            try model.setArchived(cardID: card.id, archived: !archived)
-                                        } catch { model.error = error.localizedDescription }
-                                    }.tint(archived ? Palette.accent : .secondary)
-                                }
-                        }
+            ForEach(groups, id: \.topic.id) { group in
+                Section(group.topic.title) {
+                    ForEach(group.cards) { card in
+                        NavigationLink {
+                            CardDetailView(cardID: card.id, cardIDs: orderedIDs)
+                        } label: {
+                            MathText(card.prompt, pointSize: 18)
+                                .allowsHitTesting(false).padding(.vertical, 10)
+                        }.listRowBackground(Palette.surface)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(
+                                    archived ? "Restore to Library" : "Archive",
+                                    systemImage: archived ? "tray.and.arrow.up" : "archivebox"
+                                ) {
+                                    do {
+                                        try model.setArchived(cardID: card.id, archived: !archived)
+                                    } catch { model.error = error.localizedDescription }
+                                }.tint(archived ? Palette.accent : .secondary)
+                            }
                     }
                 }
             }
@@ -57,7 +60,7 @@ private struct CardListView: View {
         .navigationTitle(archived ? "Archived cards" : "Library")
         .searchable(text: $search, prompt: "Find a card")
         .overlay {
-            if cards.isEmpty {
+            if orderedIDs.isEmpty {
                 if archived, search.isEmpty {
                     ContentUnavailableView(
                         "No archived cards", systemImage: "archivebox",
@@ -68,7 +71,7 @@ private struct CardListView: View {
             }
         }
         .fullScreenCover(isPresented: $showingCanvas) {
-            LibraryCanvasView(cardIDs: orderedCards.map(\.id), archived: archived)
+            LibraryCanvasView(cardIDs: orderedIDs, archived: archived)
         }
         .toolbar {
             Button {
@@ -76,7 +79,7 @@ private struct CardListView: View {
             } label: {
                 Label("Browse canvas", systemImage: "square.grid.3x3")
             }
-            .disabled(cards.isEmpty)
+            .disabled(orderedIDs.isEmpty)
             if !archived, model.library?.deck.cards.contains(where: \.isArchived) == true {
                 NavigationLink {
                     CardListView(archived: true)
