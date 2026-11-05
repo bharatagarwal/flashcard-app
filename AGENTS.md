@@ -30,6 +30,8 @@ The display name is **Recur**. Keep the internal project and target name
 | `Scripts/make_starter.py` | Source for the starter deck and example card files |
 | `App/Resources/starter.json`, `Examples/` | Generated card files |
 | `Sources/RecallMath/` | Native mixed text/math layout, delimiter parsing, and VoiceOver math |
+| `Tests/RecallMathTests/` | Delimiter, speech, equation-boundary, and native notation regressions |
+| `Tools/RendererCheck/` | Native drawing checks, timing output, and a visual sample sheet |
 | `App/Resources/Math/` | KaTeX for authoring validation only; excluded from the app |
 | `Schemas/` | JSON exchange format and its documentation |
 | `Vendor/swift-fsrs/`, `Vendor/swiftui-math/` | Pinned scheduler and native math renderer; see `Vendor/README.md` |
@@ -38,6 +40,23 @@ The display name is **Recur**. Keep the internal project and target name
 | `project.yml` | XcodeGen source for `MathRecall.xcodeproj` |
 
 Read `README.md` for setup and `Schemas/README.md` before changing card formats.
+
+## Architecture and performance
+
+Keep domain rules in `RecallCore`, math presentation in `RecallMath`, and screens
+in `App`. `AppModel` coordinates persistence on the main actor. Change a candidate
+library, commit it to SQLite, then publish it; a failed save must not publish
+unsaved data. Views send actions through these boundaries.
+
+Prefer native SwiftUI and Core Text for frequent surfaces such as Library rows
+and card faces. Reuse rendered work across browsing and animation. Keep caches
+bounded and disposable; they must never become the source of card content or
+review state. Filter and group the Library once per view evaluation, rather than
+repeating searches for every topic and navigation link.
+
+When addressing latency, trace the work first. Measure initial rendering and
+cached rendering separately. State which device and workload were measured;
+Mac timings do not establish latency on the phone.
 
 ## Writing and interface conventions
 
@@ -127,6 +146,12 @@ Only departing actions should send the card off-screen; flipping keeps it in pla
   Preserve existing due dates and historical settings when changing the scheduler;
   apply current settings when a card is next rated.
 
+Again means failed recall; Hard means correct recall with effort; Good means
+normal correct recall; Easy means effortless recall. These are model inputs,
+not fixed durations. Ratings can produce the same rounded interval. Distinguish
+upstream defaults, our chosen settings, and research findings when discussing
+scheduling; do not present an unverified duration as a scientific recommendation.
+
 ## Math, diagrams, and generated files
 
 Author cards in `Scripts/make_starter.py`, then regenerate:
@@ -134,19 +159,46 @@ Author cards in `Scripts/make_starter.py`, then regenerate:
 ```sh
 python3 Scripts/make_starter.py
 node Scripts/check_math.cjs
+swift Scripts/check_renderer.swift
 ```
 
+For a topic shared in chat, identify the missing skill before writing cards.
+Separate a rule, its meaning, and a short application when each needs recall.
+Fundamentals belong in focused questions with short backs: identifying an inner
+function, interpreting a symbol, or stating why two rates multiply. Longer
+teaching and derivations belong in chat. Include assumptions such as log base,
+domain restrictions, and radians where they affect the answer.
+
+Edit the authoring script, not generated JSON alone. Regenerate the bundled deck
+and examples together; update documented counts and existing count checks when
+the collection changes. Count active and archived cards separately. The bundled
+deck's counts need not match the phone after imports, edits, and restores.
+
 Use `\(...\)` for inline LaTeX and `\[...\]` for display math. `MathText` in
-`RecallMath` lays out native prose and SwiftUIMath equations.
-It aligns inline math with the text baseline, reserves a line for display math,
-and uses bounded native parse/layout caches plus a 16 MB screen-scale artwork
-cache. Display equations wrap at safe
-top-level equalities and list separators; indivisible wide formulas scale to fit.
+`RecallMath` lays out native prose and SwiftUIMath equations. `App/MathText.swift`
+is an alias to that shared renderer; do not create separate renderers for the
+Library, reviews, imports, or historical content.
+
+The renderer aligns inline math with text baselines and reserves a line for
+display math. Display equations wrap at safe top-level equalities and list
+separators; indivisible wide formulas scale to fit. It keeps bounded parse/layout
+caches and a 16 MB, 512-entry artwork cache. Equations draw once into transparent,
+screen-scale images keyed by formula, font, size, style, and display scale.
+Template tinting follows the current theme without another typeset. Keep this
+separation: live math Canvas drawing inside the animated card caused missing
+glyphs even when offscreen rendering checks passed.
+
 VoiceOver reads the whole text with spoken fractions, powers, and common symbols.
 Do not reintroduce web views, JavaScript, HTML interpretation, or network rendering.
 Keep card JSON and historical hashes unchanged when changing rendering.
 Run the native renderer check for new notation; unsupported imported math must
 show a readable error, never an empty card.
+
+SwiftUIMath and its fonts are pinned locally. `RecallMath` uses its Textual SPI
+for metrics; check compatibility before upgrading. Record upstream revisions,
+local patches, and licences in `Vendor/README.md`. KaTeX remains an authoring
+syntax check only: passing it does not prove that the native renderer supports
+the notation. Keep vendor fonts in app bundles and temporary native test apps.
 
 If needed, compile TikZ outside the phone app into vector PDFs. Preserve
 transparency, supply suitable light/dark variants, and keep tap-to-zoom support.
@@ -175,7 +227,7 @@ retired tools in their own style.
 xcrun swift format format --in-place App/LibraryView.swift Sources/RecallCore/BrowseMachine.swift
 
 Scripts/lint.sh             # Strict formatting and production-code lint
-Scripts/test.sh             # Core tests, with warnings as errors
+Scripts/test.sh             # Core and math tests, with warnings as errors
 node Scripts/check_math.cjs # LaTeX validation
 swift Scripts/check_renderer.swift # Native SwiftUI checks at phone width, both themes
 Scripts/check.sh            # All of the above, then an unsigned generic iOS build
@@ -187,6 +239,12 @@ meaningful bugs and workflow changes, especially stale events, cancellation,
 failed saves, archive/restore, and compatibility. Unit tests and renderer checks
 do not prove that touch interaction works: check the actual sequence in a native
 view or on the phone when changing gestures or animation timing.
+
+For math changes, inspect the rendered sample sheet as well as check results.
+Check complete equations, baselines, wrapping, both themes, and larger text.
+For renderer or animation changes, also reveal a real card and move between
+cards in a native view: a successful parse or snapshot can miss live clipping.
+Keep temporary test apps separate from the user's data and close them afterward.
 
 GitHub Actions runs `Scripts/check.sh`; local success is not evidence that the
 remote workflow ran. Report what was actually checked and any remaining limits.
@@ -209,5 +267,20 @@ it**, reset its container, or change its bundle/storage identity to solve a buil
 issue. Keep the user's data. A successful build is not a successful install;
 verify the install result. A locked phone can block launch even after installation.
 
+Card files do not sync automatically with this chat. A phone update installs a
+new bundled deck; the app merges it on launch using the existing revision rules.
+An exported JSON deck can instead be imported through Recur. Report separately
+whether cards were authored, checked, built, installed, and launched. Do not call
+a local file change a phone update, or claim a touch check from a build result.
+
 Keep documentation in sync when changing gesture mappings, labels, card formats,
 state rules, or check commands. Preserve unrelated user edits.
+
+## Git workflow
+
+Make atomic commits and push completed work to the configured remote, following
+the user's standing request. Inspect the working tree first and stage only files
+for the task. Keep generated files with their authoring changes and documentation
+with the behavior it describes. Preserve unrelated edits and do not rewrite
+published history. For documentation-only changes, review the diff and whitespace;
+do not rebuild or reinstall the app. Report the commit and what was checked.
