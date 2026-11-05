@@ -78,9 +78,10 @@ public struct Library: Codable, Sendable {
     public var events: [ReviewEvent] = []
     public var session: ReviewSession?
     public var contentVersions: [String: ReviewContent]?
+    public var understanding: [String: CardUnderstanding]?
     public init(deck: Deck) { self.deck = deck }
     public func dueCards(at now: Date) -> [Flashcard] {
-        deck.cards.filter { !$0.isArchived && (schedules[$0.id]?.due ?? .distantPast) <= now }
+        deck.cards.filter { isEligibleForReview($0) && (schedules[$0.id]?.due ?? .distantPast) <= now }
             .sorted {
                 let a = schedules[$0.id]
                 let b = schedules[$1.id]
@@ -89,16 +90,16 @@ public struct Library: Codable, Sendable {
                 return $0.id < $1.id
             }
     }
-    /// Retire cards from a pending queue without deleting their schedules or past reviews.
-    public mutating func removeArchivedCardsFromSession() {
+    /// Remove unavailable cards from the pending queue without recording a memory rating.
+    public mutating func removeUnavailableCardsFromSession() {
         guard var pending = session else { return }
-        let active = Set(deck.cards.filter { !$0.isArchived }.map(\.id))
+        let active = Set(deck.cards.filter { isEligibleForReview($0) }.map(\.id))
         pending.queue.removeAll { !active.contains($0) }
         pending.total = pending.completed + pending.queue.count
         session = pending
     }
     public var nextReviewDate: Date? {
-        let active = Set(deck.cards.filter { !$0.isArchived }.map(\.id))
+        let active = Set(deck.cards.filter { isEligibleForReview($0) }.map(\.id))
         return schedules.filter { active.contains($0.key) }.values.map(\.due).min()
     }
     public var schedulerSettings: SchedulerSettings {
@@ -121,7 +122,7 @@ public struct Library: Codable, Sendable {
     }
     public mutating func rate(cardID: String, rating: Rating, at now: Date) throws {
         guard let card = deck.cards.first(where: { $0.id == cardID }),
-            !card.isArchived, session?.queue.first == cardID
+            isEligibleForReview(card), session?.queue.first == cardID
         else { throw RecallError.invalidTransition }
         guard let concept = deck.concepts.first(where: { $0.id == card.conceptID }) else {
             throw RecallError.invalidTransition

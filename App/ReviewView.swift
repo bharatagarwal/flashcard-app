@@ -56,16 +56,26 @@ struct ReviewView: View {
         }
         .safeAreaInset(edge: .bottom) {
             // Reserve the rating area so turning the card never changes its size.
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                gradeButton(.left, "Again", "Forgot")
-                gradeButton(.down, "Hard", "Recalled with effort")
-                gradeButton(.right, "Good", "Recalled correctly")
-                gradeButton(.up, "Easy", "Recalled with ease")
+            VStack(spacing: 12) {
+                Button {
+                    model.pauseForUnderstanding(cardID: card.id, interactionID: interactionID)
+                } label: {
+                    Label("Needs understanding", systemImage: "questionmark.circle")
+                        .font(.subheadline).frame(minHeight: 44)
+                }
+                .buttonStyle(.plain).foregroundStyle(.secondary).disabled(!model.review.canPause)
+                .accessibilityHint("Pause this card without giving a memory rating")
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                    gradeButton(.left, "Again", "Forgot")
+                    gradeButton(.down, "Hard", "Recalled with effort")
+                    gradeButton(.right, "Good", "Recalled correctly")
+                    gradeButton(.up, "Easy", "Recalled with ease")
+                }
+                .opacity(model.review.canGrade || isSaving ? 1 : 0)
+                .allowsHitTesting(model.review.canGrade)
+                .accessibilityHidden(!model.review.canGrade)
             }
             .padding(.horizontal, 20).padding(.vertical, 12)
-            .opacity(model.review.canGrade || isSaving ? 1 : 0)
-            .allowsHitTesting(model.review.canGrade)
-            .accessibilityHidden(!model.review.canGrade)
         }
     }
     var isSaving: Bool {
@@ -111,6 +121,12 @@ struct ReviewView: View {
             Text("Session complete").font(.largeTitle.weight(.semibold))
             Text("\(model.library?.session?.completed ?? 0) reviews saved.")
                 .foregroundStyle(.secondary)
+            if let count = model.library?.needsUnderstandingCount, count > 0 {
+                Text(
+                    "\(count) \(count == 1 ? "card needs" : "cards need") understanding. Memory reviews are paused for these cards."
+                )
+                .font(.subheadline).foregroundStyle(.secondary).multilineTextAlignment(.center)
+            }
             Spacer()
             PrimaryButton(title: "Back to Today") { dismiss() }
         }.padding(24)

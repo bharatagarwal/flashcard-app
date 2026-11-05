@@ -54,6 +54,24 @@ new cards become due immediately, while studied cards keep their next review dat
 old IDs and schedules. App updates do not rewrite historical content snapshots.
 Locally edited cards at the same or a higher revision remain untouched.
 
+## Understanding and memory
+
+Tap **Needs understanding** during a review when the question or answer is a
+black box. You can mark a card from either stable face. Recur pauses that card's
+memory reviews and moves to the next card without recording a rating. Again,
+Hard, Good, and Easy remain memory ratings.
+
+Today links to cards needing understanding. In Library, tap the filter button
+(**Needs understanding**) to show only these cards. Tap it again to show all cards. These cards remain browsable and keep their
+answers, schedules, and review history. The same filter applies to the canvas.
+You can also mark a card through its **Card actions** menu while browsing.
+
+Once you understand it, tap **Mark understood** on the card's banner. Its original
+schedule becomes eligible again; an overdue card can appear in your next review
+session. It is not inserted into a session already in progress. Archiving is
+independent: an archived card stays archived even after being marked understood.
+Understanding marks travel in full backups, not in shared content decks.
+
 ## Author and import cards
 
 Edit `Scripts/make_starter.py`, then run:

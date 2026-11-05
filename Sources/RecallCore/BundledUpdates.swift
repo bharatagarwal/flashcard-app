@@ -34,7 +34,7 @@ extension Library {
         }
         if !assets.isEmpty { result.deck.assets = assets }
         result.deck.schemaVersion = max(result.deck.schemaVersion, bundled.schemaVersion)
-        result.removeArchivedCardsFromSession()
+        result.removeUnavailableCardsFromSession()
         try result.validate()
         return result
     }

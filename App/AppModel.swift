@@ -45,7 +45,7 @@ final class AppModel: ObservableObject {
     }
     func startReview() {
         guard var candidate = library else { return }
-        candidate.removeArchivedCardsFromSession()
+        candidate.removeUnavailableCardsFromSession()
         if candidate.session?.queue.isEmpty != false {
             candidate.session = ReviewSession(queue: due.map(\.id))
         }
@@ -63,6 +63,8 @@ final class AppModel: ObservableObject {
         guard var candidate = library else { return }
         do {
             try review.beginSave(cardID: cardID)
+        } catch { return }
+        do {
             try candidate.rate(cardID: cardID, rating: grade, at: Date())
             try commit(candidate)
             if let session = candidate.session { try review.saved(session: session) }
@@ -71,6 +73,26 @@ final class AppModel: ObservableObject {
             self.error = error.localizedDescription
         }
     }
+    func pauseForUnderstanding(cardID: String, interactionID: UUID) {
+        guard var candidate = library else { return }
+        do {
+            try review.beginPause(cardID: cardID, interactionID: interactionID)
+        } catch { return }
+        do {
+            try candidate.setUnderstanding(.needsUnderstanding, cardID: cardID)
+            try commit(candidate)
+            if let session = candidate.session { try review.saved(session: session) }
+        } catch {
+            review.saveFailed()
+            self.error = error.localizedDescription
+        }
+    }
+    func setUnderstanding(_ status: CardUnderstanding, cardID: String) throws {
+        guard var candidate = library else { throw RecallError.invalidTransition }
+        try candidate.setUnderstanding(status, cardID: cardID)
+        try commit(candidate)
+    }
+
     func interval(_ grade: Grade, cardID: String) -> String {
         guard let scheduled = try? library?.preview(cardID: cardID, rating: grade, at: Date()) else {
             return ""

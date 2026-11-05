@@ -5,16 +5,23 @@ struct LibraryView: View {
     var body: some View { NavigationStack { CardListView() } }
 }
 
-private struct CardListView: View {
+struct CardListView: View {
     @EnvironmentObject var model: AppModel
     var archived = false
     @State private var search = ""
     @State private var showingCanvas = false
+    @State private var needsUnderstandingOnly: Bool
+
+    init(archived: Bool = false, needsUnderstandingOnly: Bool = false) {
+        self.archived = archived
+        _needsUnderstandingOnly = State(initialValue: needsUnderstandingOnly)
+    }
     private var groups: [(topic: Concept, cards: [Flashcard])] {
         let concepts = model.library?.deck.concepts ?? []
         let titles = Dictionary(uniqueKeysWithValues: concepts.map { ($0.id, $0.title) })
         let matches = (model.library?.deck.cards ?? []).filter {
             $0.isArchived == archived
+                && (!needsUnderstandingOnly || model.library?.needsUnderstanding($0.id) == true)
                 && (search.isEmpty
                     || ($0.prompt + " " + $0.answer + " " + (titles[$0.conceptID] ?? ""))
                         .localizedCaseInsensitiveContains(search))
@@ -37,10 +44,17 @@ private struct CardListView: View {
                 Section(group.topic.title) {
                     ForEach(group.cards) { card in
                         NavigationLink {
-                            CardDetailView(cardID: card.id, cardIDs: orderedIDs)
+                            CardDetailView(
+                                cardID: card.id, cardIDs: orderedIDs,
+                                needsUnderstandingOnly: needsUnderstandingOnly)
                         } label: {
-                            MathText(card.prompt, pointSize: 18)
-                                .allowsHitTesting(false).padding(.vertical, 10)
+                            VStack(alignment: .leading, spacing: 6) {
+                                MathText(card.prompt, pointSize: 18).allowsHitTesting(false)
+                                if model.library?.needsUnderstanding(card.id) == true {
+                                    Label("Needs understanding", systemImage: "questionmark.circle")
+                                        .font(.caption).foregroundStyle(.secondary)
+                                }
+                            }.padding(.vertical, 10)
                         }.listRowBackground(Palette.surface)
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 Button(
@@ -57,11 +71,19 @@ private struct CardListView: View {
             }
         }
         .scrollContentBackground(.hidden).background(Palette.paper)
-        .navigationTitle(archived ? "Archived cards" : "Library")
+        .navigationTitle(
+            archived ? "Archived cards" : (needsUnderstandingOnly ? "Needs understanding" : "Library")
+        )
         .searchable(text: $search, prompt: "Find a card")
         .overlay {
             if orderedIDs.isEmpty {
-                if archived, search.isEmpty {
+                if needsUnderstandingOnly, search.isEmpty {
+                    ContentUnavailableView(
+                        "No cards need understanding", systemImage: "questionmark.circle",
+                        description: Text(
+                            "Marked cards will appear here. Their memory reviews pause until you mark them understood."
+                        ))
+                } else if archived, search.isEmpty {
                     ContentUnavailableView(
                         "No archived cards", systemImage: "archivebox",
                         description: Text("Restored cards appear in Library."))
@@ -71,9 +93,20 @@ private struct CardListView: View {
             }
         }
         .fullScreenCover(isPresented: $showingCanvas) {
-            LibraryCanvasView(cardIDs: orderedIDs, archived: archived)
+            LibraryCanvasView(
+                cardIDs: orderedIDs, archived: archived, needsUnderstandingOnly: needsUnderstandingOnly)
         }
         .toolbar {
+            Button {
+                needsUnderstandingOnly.toggle()
+            } label: {
+                Label(
+                    needsUnderstandingOnly ? "Show all cards" : "Needs understanding",
+                    systemImage: needsUnderstandingOnly
+                        ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+            }
+            .accessibilityValue(
+                needsUnderstandingOnly ? "Showing cards needing understanding" : "Showing all cards")
             Button {
                 showingCanvas = true
             } label: {
@@ -82,7 +115,7 @@ private struct CardListView: View {
             .disabled(orderedIDs.isEmpty)
             if !archived, model.library?.deck.cards.contains(where: \.isArchived) == true {
                 NavigationLink {
-                    CardListView(archived: true)
+                    CardListView(archived: true, needsUnderstandingOnly: needsUnderstandingOnly)
                 } label: {
                     Label("Archived cards", systemImage: "archivebox")
                 }
@@ -95,12 +128,14 @@ struct CardDetailView: View {
     @EnvironmentObject var model: AppModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let needsUnderstandingOnly: Bool
     @State private var browser: BrowseMachine
     @State private var answerScrolls = false
     private var selectedID: String { browser.currentID }
     private var cardIDs: [String] { browser.cardIDs }
 
-    init(cardID: String, cardIDs: [String] = []) {
+    init(cardID: String, cardIDs: [String] = [], needsUnderstandingOnly: Bool = false) {
+        self.needsUnderstandingOnly = needsUnderstandingOnly
         _browser = State(initialValue: BrowseMachine(cardID: cardID, cardIDs: cardIDs))
     }
 
@@ -114,6 +149,8 @@ struct CardDetailView: View {
     }
 
     var body: some View {
+        let actionCardID = selectedID
+        let actionVisitID = browser.visitID
         GeometryReader { geometry in
             if let card = model.card(selectedID) {
                 let visitID = browser.visitID
@@ -190,28 +227,63 @@ struct CardDetailView: View {
             }.padding(.horizontal, 20).padding(.bottom, 8)
         }
         .safeAreaInset(edge: .top) {
-            if model.card(selectedID)?.isArchived == true {
-                HStack {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text("Archived").font(.headline)
-                        Text("Kept out of reviews").font(.caption).foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                    Button("Restore to Library") {
-                        do {
-                            try model.setArchived(cardID: selectedID, archived: false)
-                            close()
-                        } catch { model.error = error.localizedDescription }
-                    }.buttonStyle(.borderedProminent).font(.subheadline).disabled(!browser.canTurn)
-                }.padding(.horizontal, 20).padding(.vertical, 10)
+            VStack(spacing: 0) {
+                if model.library?.needsUnderstanding(selectedID) == true {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Needs understanding").font(.headline)
+                            Text("Memory reviews paused").font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Button("Mark understood") {
+                            changeUnderstanding(to: .understood, cardID: actionCardID, visitID: actionVisitID)
+                        }
+                        .buttonStyle(.bordered).disabled(!browser.canTurn)
+                    }.padding(.horizontal, 20).padding(.vertical, 10)
+                }
+                if model.card(selectedID)?.isArchived == true {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Archived").font(.headline)
+                            Text("Kept out of reviews").font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Button("Restore to Library") {
+                            do {
+                                try model.setArchived(cardID: selectedID, archived: false)
+                                close()
+                            } catch { model.error = error.localizedDescription }
+                        }.buttonStyle(.borderedProminent).font(.subheadline).disabled(!browser.canTurn)
+                    }.padding(.horizontal, 20).padding(.vertical, 10)
+                }
             }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 HStack {
-                    if model.card(selectedID)?.isArchived == false {
-                        Button("Edit") { browser.edit() }.disabled(!browser.canTurn)
-                    }
+                    Menu {
+                        if model.card(selectedID)?.isArchived == false {
+                            Button("Edit answer") {
+                                guard browser.currentID == actionCardID,
+                                    browser.accepts(visitID: actionVisitID)
+                                else { return }
+                                browser.edit()
+                            }
+                        }
+                        if model.library?.needsUnderstanding(selectedID) == true {
+                            Button("Mark understood") {
+                                changeUnderstanding(
+                                    to: .understood, cardID: actionCardID, visitID: actionVisitID)
+                            }
+                        } else {
+                            Button("Needs understanding") {
+                                changeUnderstanding(
+                                    to: .needsUnderstanding, cardID: actionCardID, visitID: actionVisitID)
+                            }
+                        }
+                    } label: {
+                        Label("Card actions", systemImage: "ellipsis")
+                    }.disabled(!browser.canTurn)
                     Button {
                         close()
                     } label: {
@@ -259,6 +331,21 @@ struct CardDetailView: View {
         let token = UUID()
         withAnimation(FlashcardMotion.animation(reduceMotion: reduceMotion)) {
             do { try browser.beginTurn(token: token) } catch { return }
+        }
+    }
+
+    private func changeUnderstanding(to status: CardUnderstanding, cardID: String, visitID: UUID) {
+        guard browser.currentID == cardID else { return }
+        do {
+            try browser.beginUnderstandingChange(visitID: visitID)
+        } catch { return }
+        do {
+            try model.setUnderstanding(status, cardID: cardID)
+            browser.finishUnderstandingChange()
+            if needsUnderstandingOnly, status == .understood { close() }
+        } catch {
+            browser.finishUnderstandingChange()
+            model.error = error.localizedDescription
         }
     }
 

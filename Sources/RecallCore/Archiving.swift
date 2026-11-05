@@ -12,6 +12,6 @@ extension Library {
         }
         deck.cards[index].archived = archived
         deck.cards[index].revision += 1
-        removeArchivedCardsFromSession()
+        removeUnavailableCardsFromSession()
     }
 }

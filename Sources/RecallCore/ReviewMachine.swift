@@ -1,11 +1,16 @@
 import Foundation
 
+public enum ReviewReadyFace: Equatable, Sendable {
+    case question, answer, questionRevisited
+}
+
 public enum ReviewPhase: Equatable {
     case idle
     case question(String)
     case answer(String)
     case questionRevisited(String)
     case saving(String)
+    case pausing(cardID: String, previousFace: ReviewReadyFace)
     case finished
     case turningToAnswer(cardID: String, token: UUID)
     case turningToQuestion(cardID: String, token: UUID)
@@ -19,7 +24,7 @@ public struct ReviewMachine {
     public var currentID: String? {
         switch phase {
         case .question(let id), .answer(let id), .questionRevisited(let id), .saving(let id),
-            .turningToAnswer(let id, _), .turningToQuestion(let id, _):
+            .turningToAnswer(let id, _), .turningToQuestion(let id, _), .pausing(let id, _):
             return id
         case .idle, .finished: return nil
         }
@@ -33,12 +38,14 @@ public struct ReviewMachine {
     public var showingBack: Bool {
         switch phase {
         case .turningToAnswer, .answer, .saving: return true
+        case .pausing(_, let face): return face == .answer
         default: return false
         }
     }
     public var answerRevealed: Bool {
         switch phase {
         case .idle, .question, .finished: return false
+        case .pausing(_, let face): return face != .question
         default: return true
         }
     }
@@ -48,6 +55,24 @@ public struct ReviewMachine {
         default: return false
         }
     }
+    public var canPause: Bool { canTurn }
+    public func acceptsPause(cardID: String, interactionID: UUID) -> Bool {
+        canPause && currentID == cardID && self.interactionID == interactionID
+    }
+    public mutating func beginPause(cardID: String, interactionID: UUID) throws {
+        guard acceptsPause(cardID: cardID, interactionID: interactionID) else {
+            throw RecallError.invalidTransition
+        }
+        let face: ReviewReadyFace
+        switch phase {
+        case .question: face = .question
+        case .answer: face = .answer
+        case .questionRevisited: face = .questionRevisited
+        default: throw RecallError.invalidTransition
+        }
+        phase = .pausing(cardID: cardID, previousFace: face)
+        self.interactionID = UUID()
+    }
     public var canGrade: Bool {
         if case .answer = phase { return true }
         return false
@@ -56,7 +81,10 @@ public struct ReviewMachine {
         phase == .answer(cardID) && self.interactionID == interactionID
     }
     public mutating func begin(session: ReviewSession) {
-        if case .saving = phase { return }
+        switch phase {
+        case .saving, .pausing: return
+        default: break
+        }
         phase = session.queue.first.map { .question($0) } ?? .finished
         interactionID = UUID()
     }
@@ -83,15 +111,25 @@ public struct ReviewMachine {
         interactionID = UUID()
     }
     public mutating func saved(session: ReviewSession) throws {
-        guard case .saving = phase else { throw RecallError.invalidTransition }
+        switch phase {
+        case .saving, .pausing: break
+        default: throw RecallError.invalidTransition
+        }
         phase = session.queue.first.map { .question($0) } ?? .finished
         interactionID = UUID()
     }
     public mutating func saveFailed() {
-        if case .saving(let id) = phase {
-            phase = .answer(id)
-            interactionID = UUID()
+        switch phase {
+        case .saving(let id): phase = .answer(id)
+        case .pausing(let id, let face):
+            switch face {
+            case .question: phase = .question(id)
+            case .answer: phase = .answer(id)
+            case .questionRevisited: phase = .questionRevisited(id)
+            }
+        default: return
         }
+        interactionID = UUID()
     }
 }
 

@@ -102,6 +102,17 @@ struct TodayView: View {
                         Text(dueCount == 1 ? "card ready to review" : "cards ready to review").font(.title3)
                             .foregroundStyle(.secondary)
                     }
+                    if let count = model.library?.needsUnderstandingCount, count > 0 {
+                        NavigationLink {
+                            CardListView(needsUnderstandingOnly: true)
+                        } label: {
+                            Label(
+                                "\(count) \(count == 1 ? "card needs" : "cards need") understanding",
+                                systemImage: "questionmark.circle"
+                            )
+                            .font(.subheadline)
+                        }
+                    }
                     if model.library?.session?.queue.isEmpty == false {
                         PrimaryButton(title: "Resume review") { begin() }
                     } else if dueCount > 0 {

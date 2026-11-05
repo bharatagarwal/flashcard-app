@@ -14,6 +14,7 @@ public struct DatabaseStore {
         var assets: [String]?
         var events: [String]
         var session: ReviewSession?
+        var understanding: [String: CardUnderstanding]?
     }
     private static let tables = [
         "metadata", "concepts", "cards", "assets", "schedules", "events", "content_versions",
@@ -54,6 +55,7 @@ public struct DatabaseStore {
             result.schedules = try read("schedules", db)
             result.events = try ordered(header.events, events)
             result.session = header.session
+            result.understanding = header.understanding
             let versions: [String: ReviewContent] = try read("content_versions", db)
             result.contentVersions = versions.isEmpty ? nil : versions
             try result.validate()
@@ -84,7 +86,7 @@ public struct DatabaseStore {
                     title: library.deck.title, concepts: library.deck.concepts.map(\.id),
                     cards: library.deck.cards.map(\.id),
                     assets: library.deck.assets?.map(\.id), events: library.events.map { $0.id.uuidString },
-                    session: library.session)
+                    session: library.session, understanding: library.understanding)
                 try reconcile("metadata", ["library": header], db)
                 try execute("COMMIT", db)
             } catch {

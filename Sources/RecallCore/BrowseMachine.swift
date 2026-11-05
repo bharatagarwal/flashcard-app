@@ -16,6 +16,7 @@ public enum BrowseSheet: Equatable, Identifiable, Sendable {
 public struct BrowseMachine {
     public enum Phase: Equatable, Sendable {
         case browsing
+        case savingUnderstanding
         case sheet(BrowseSheet)
         case closed
     }
@@ -64,6 +65,17 @@ public struct BrowseMachine {
         face.begin(session: ReviewSession(queue: [currentID]))
         visitID = UUID()
     }
+    public mutating func beginUnderstandingChange(visitID: UUID) throws {
+        guard accepts(visitID: visitID) else { throw RecallError.invalidTransition }
+        phase = .savingUnderstanding
+        self.visitID = UUID()
+    }
+    public mutating func finishUnderstandingChange() {
+        guard phase == .savingUnderstanding else { return }
+        phase = .browsing
+        visitID = UUID()
+    }
+
     public mutating func showHistory() { present(.history(currentID)) }
     public mutating func edit() { present(.edit(currentID)) }
     private mutating func present(_ sheet: BrowseSheet) {

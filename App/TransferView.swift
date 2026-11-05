@@ -124,6 +124,12 @@ struct TransferView: View {
                 Text(
                     "Replace your library with \(library.deck.cards.count) cards and \(library.events.count) review records from this backup. Export your current backup first if you want to keep it."
                 )
+                if library.needsUnderstandingCount > 0 {
+                    Text(
+                        "\(library.needsUnderstandingCount) cards in this backup have memory reviews paused until understood."
+                    )
+                    .font(.subheadline).foregroundStyle(.secondary)
+                }
                 Button("Replace library with this backup", role: .destructive) { model.applyImport() }
                     .buttonStyle(.bordered)
                 Button("Cancel") { model.importState = .idle }

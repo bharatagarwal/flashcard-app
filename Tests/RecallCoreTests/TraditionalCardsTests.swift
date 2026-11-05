@@ -62,7 +62,7 @@ private func traditionalDeck(_ path: String = "App/Resources/starter.json") thro
     library.session = ReviewSession(queue: [archived.id])
     #expect(throws: RecallError.self) { try library.rate(cardID: archived.id, rating: .good, at: now) }
     #expect(library.events.isEmpty)
-    library.removeArchivedCardsFromSession()
+    library.removeUnavailableCardsFromSession()
     #expect(library.session?.queue.isEmpty == true)
     #expect(library.session?.total == 0)
 }

@@ -24,6 +24,7 @@ The display name is **Recur**. Keep the internal project and target name
 | `App/` | SwiftUI screens, app model, card motion, gestures, and native rendering |
 | `App/AppModel.swift` | Main-actor app state, persistence calls, imports, and review actions |
 | `Sources/RecallCore/` | Models, state machines, FSRS integration, imports, updates, and SQLite storage |
+| `Sources/RecallCore/Understanding.swift` | Personal understanding marks and review eligibility |
 | `Sources/CSQLite/` | SQLite system-library bridge |
 | `Tests/RecallCoreTests/` | Swift Testing tests for core rules and persistence |
 | `Tests/Fixtures/` | Old decks retained to test compatibility |
@@ -88,11 +89,15 @@ events; disabled controls alone must not enforce a rule. Plain view state is fin
 for search text, layout measurements, theme choice, and similar independent values.
 
 - `ReviewMachine` owns the current card, question/answer face, turns, saving, and
-  completion. Only a stable answer can be graded. A failed save returns to that
-  answer. Advance the queue only after the database commit succeeds.
+  completion. Only a stable answer can be graded. A failed grade save returns to
+  that answer. Understanding pauses accept any stable face, capture the interaction
+  ID, and enter a separate pausing phase. Failed pause saves restore the same face.
+  Advance the queue only after the database commit succeeds.
 - `BrowseMachine` owns selection, the current face machine, and one presentation
   state: browsing, a sheet, or closed. Edit and Past reviews cannot compete. A new
   card starts on its front. Browsing never grades or changes a schedule.
+  Understanding changes use a saving phase and the captured visit ID. On failure,
+  keep the current face; on close, a late completion must not reopen browsing.
 - `CardSwipeMachine` owns idle, dragging, and committing. A deliberate drag must
   cross the 96-point threshold along one axis. Short or diagonal drags return the
   card. Releasing twice cannot trigger two actions.
@@ -151,6 +156,27 @@ normal correct recall; Easy means effortless recall. These are model inputs,
 not fixed durations. Ratings can produce the same rounded interval. Distinguish
 upstream defaults, our chosen settings, and research findings when discussing
 scheduling; do not present an unverified duration as a scientific recommendation.
+
+## Understanding is separate from memory
+
+**Needs understanding** pauses a card until the user chooses **Mark understood**.
+It is not Again, an archive action, a new FSRS state, or a schedule reset. Keep it
+available from either stable review face and through Card actions while browsing.
+Show paused cards through the Library filter and Today link; the canvas must use
+the same filter. Marking understood while browsing that filtered list closes the
+card so it no longer appears in the filtered results.
+
+Store personal marks in optional `Library.understanding` metadata, not `Flashcard`
+or `ReviewContent`. Keep old backups readable and leave an absent field absent.
+Full backups preserve marks; content decks, imports, and bundled revisions do not
+overwrite them. Use `Library.setUnderstanding` for changes. Centralize eligibility
+in `isEligibleForReview` and clean queues with `removeUnavailableCardsFromSession`.
+
+Pausing commits the mark and remaining queue together, without recording a grade
+or changing schedules, completed counts, content revisions, or snapshots. Restoring
+understanding keeps the original due date and does not insert into a running
+session. Archive and understanding marks remain independent. Test both states
+in combination, stale actions, failed saves, and database/backup round trips.
 
 ## Math, diagrams, and generated files
 

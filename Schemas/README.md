@@ -101,3 +101,20 @@ text; it does not guess at user-imported content.
 `Scripts/make_starter.py` is the authoring source for the collection and all its
 example exports. It includes `output/pdf/unit-circle.pdf` when present. Run the
 math check and tests after regenerating; the app needs no authoring tools.
+
+
+## Personal understanding marks
+
+Full library backups can include an optional `understanding` object, keyed by
+card ID. Values are `"needsUnderstanding"` or `"understood"`. This is personal
+study state, not a card field or a memory rating; shared deck files omit it.
+Missing marks leave legacy behavior unchanged, and an absent object stays absent
+when encoded. Each marked ID must identify a card in the library.
+
+SQLite stores these marks in the typed library metadata alongside the pending
+session. Marking a card `needsUnderstanding` saves the mark and queue change in
+one transaction. It removes the card from due lists, next-review calculations,
+and pending queues without changing its schedule, content revision, completed
+count, events, or historical hashes. Marking it `understood` restores review
+eligibility unless archived, but does not add it to a running session. Content
+imports and bundled updates preserve the user's marks.

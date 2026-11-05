@@ -198,7 +198,7 @@ extension Library {
         if !assets.isEmpty { deck.assets = assets }
         for id in resetIDs { schedules.removeValue(forKey: id) }
         deck.schemaVersion = max(deck.schemaVersion, incoming.schemaVersion)
-        removeArchivedCardsFromSession()
+        removeUnavailableCardsFromSession()
     }
     public func validate() throws {
         guard [1, 2].contains(schemaVersion) else {
@@ -206,6 +206,9 @@ extension Library {
         }
         try deck.validate()
         let ids = Set(deck.cards.map(\.id))
+        guard Set((understanding ?? [:]).keys).isSubset(of: ids) else {
+            throw RecallError.invalid("The backup has an understanding status for an unknown card.")
+        }
         for (id, card) in schedules {
             guard ids.contains(id), card.due.timeIntervalSince1970.isFinite,
                 card.stability.isFinite, card.stability >= 0, card.difficulty.isFinite,

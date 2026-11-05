@@ -7,11 +7,13 @@ struct LibraryCanvasView: View {
     @Environment(\.dismiss) private var dismiss
     let cardIDs: [String]
     var archived = false
+    var needsUnderstandingOnly = false
 
     private var groups: [(topic: Concept, cards: [Flashcard])] {
         let included = Set(cardIDs)
         let cards = (model.library?.deck.cards ?? []).filter {
             included.contains($0.id) && $0.isArchived == archived
+                && (!needsUnderstandingOnly || model.library?.needsUnderstanding($0.id) == true)
         }
         return (model.library?.deck.concepts ?? []).compactMap { topic in
             let group = cards.filter { $0.conceptID == topic.id }
@@ -29,7 +31,9 @@ struct LibraryCanvasView: View {
                     ForEach(groups, id: \.topic.id) { group in
                         if let first = group.cards.first {
                             NavigationLink {
-                                CardDetailView(cardID: first.id, cardIDs: group.cards.map(\.id))
+                                CardDetailView(
+                                    cardID: first.id, cardIDs: group.cards.map(\.id),
+                                    needsUnderstandingOnly: needsUnderstandingOnly)
                             } label: {
                                 topicStack(group.topic, cards: group.cards, first: first)
                             }
@@ -42,6 +46,13 @@ struct LibraryCanvasView: View {
                 .padding(.horizontal, 24).padding(.top, 32).padding(.bottom, 48)
             }
             .background(Palette.paper)
+            .overlay {
+                if groups.isEmpty {
+                    ContentUnavailableView(
+                        needsUnderstandingOnly ? "No cards need understanding" : "No matching cards",
+                        systemImage: "rectangle.stack")
+                }
+            }
             .navigationTitle("Library canvas").navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 Text("Pan to explore · Tap a topic to browse")
