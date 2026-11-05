@@ -157,10 +157,13 @@ xcodebuild -project MathRecall.xcodeproj -scheme MathRecall \
 Select **Recur iPhone 13 mini** in Xcode to run it, or use its ID from
 `xcrun simctl list devices available` with `simctl boot`, `install`, and `launch`.
 The app is at `/tmp/recur-simulator-build/Build/Products/Debug-iphonesimulator/MathRecall.app`.
+Xcode 27.2 shows simulated devices in **Device Hub**, available through
+**Xcode > Open Developer Tool > Device Hub**. Select **Recur iPhone 13 mini**
+and click **Start**. Its app lives at
+`/Applications/Xcode.app/Contents/Applications/DeviceHub.app`; do not treat the
+absence of the former `Simulator.app` as an incomplete Xcode installation.
 Simulator checks cover iOS layout and workflows; use the phone for final touch
-and performance checks. The runtime is installed, but this local Xcode copy is
-missing `Simulator.app`, so interactive simulator checks still need that app
-restored from the matching Xcode distribution.
+and performance checks.
 
 ```sh
 Scripts/check.sh

@@ -294,6 +294,10 @@ such as `/tmp/math-recall-ios-build`.
 The user wants a small Xcode footprint and has authorized one Apple-silicon iOS
 Simulator runtime with a Recur iPhone 13 mini device. Use it to check the actual
 iOS screens and workflows; prefer this over adapting screens into a Mac test app.
+Xcode 27.2 uses Device Hub at `Xcode.app/Contents/Applications/DeviceHub.app`
+(bundle ID `com.apple.dt.Devices`). Select the simulated device and click Start.
+The old `Contents/Developer/Applications/Simulator.app` path is absent by design;
+check Device Hub before diagnosing a missing simulator interface.
 Do not download additional runtimes or Intel variants unless asked. Shut down the
 simulated device when finished testing to release memory and CPU. Simulator
 storage is a separate test library; keep the phone's data intact. Physical-phone
