@@ -37,12 +37,14 @@
     },
     {
       "id": "sets",
-      "title": "Set difference",
+      "title": "Sets",
       "summary": "",
-      "explanation": "Set difference",
+      "explanation": "Sets",
       "pitfall": "",
-      "sources": [],
-      "revision": 5,
+      "sources": [
+        "https://www.etymonline.com/word/idempotent"
+      ],
+      "revision": 6,
       "sections": [],
       "prerequisiteIDs": []
     },
@@ -498,6 +500,17 @@
       "hint": "",
       "objectiveID": "logs.general",
       "change": "wording"
+    },
+    {
+      "id": "sets.idempotent-origin",
+      "conceptID": "sets",
+      "objectiveID": "sets.idempotent-origin",
+      "revision": 1,
+      "kind": "Recall",
+      "prompt": "What are the Latin roots of “idempotent”?",
+      "answer": "Idem: “the same”; potens: “having power”. Literally, “same power”, recalling \\(a^2=a\\).",
+      "hint": "",
+      "change": "explanation"
     },
     {
       "id": "sets.meaning",

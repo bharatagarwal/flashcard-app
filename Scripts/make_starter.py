@@ -53,6 +53,7 @@ keep('derivatives.chain',r'Differentiate \(\sin(3x)\), with angles in radians.',
 keep('logs.fourth',r'Find \(f^{(4)}(x)\) for \(f(x)=\sin x+\ln x\), with \(x>0\).',r'\[\sin x-\frac6{x^4}\]')
 keep('logs.power',r'Differentiate \(-x^{-2}\).',r'\[2x^{-3}\]')
 keep('logs.general',r'What is the \(n\)th derivative of \(\ln x\), for \(n\ge1\) and \(x>0\)?',r'\[(-1)^{n-1}\frac{(n-1)!}{x^n}\]')
+new('sets.idempotent-origin','sets','What are the Latin roots of “idempotent”?',r'Idem: “the same”; potens: “having power”. Literally, “same power”, recalling \(a^2=a\).')
 keep('sets.meaning',r'What does \(X\setminus Y\) mean?',r'The elements in \(X\) that are not in \(Y\).')
 keep('sets.example',r'If \(X=\{1,2,3\}\) and \(Y=\{2,4\}\), find \(X\setminus Y\).',r'\[\{1,3\}\]')
 keep('sets.reverse',r'If \(X=\{1,2,3\}\) and \(Y=\{2,4\}\), find \(Y\setminus X\).',r'\[\{4\}\]')
@@ -101,8 +102,11 @@ for old in LEGACY['cards']:
 concepts=[]
 for old in LEGACY['concepts']:
     # Keep the v2 grouping fields for exchange compatibility; there are no topic lessons.
-    concepts.append(dict(id=old['id'],title=old['title'],summary='',explanation=old['title'],
-                         pitfall='',sources=[],revision=5,sections=[],prerequisiteIDs=[]))
+    title = 'Sets' if old['id'] == 'sets' else old['title']
+    sources = ['https://www.etymonline.com/word/idempotent'] if old['id'] == 'sets' else []
+    concepts.append(dict(id=old['id'],title=title,summary='',explanation=title,
+                         pitfall='',sources=sources,revision=6 if old['id'] == 'sets' else 5,
+                         sections=[],prerequisiteIDs=[]))
 deck=dict(schemaVersion=2,title='Math foundations',concepts=concepts,cards=ACTIVE+archived,assets=[])
 (ROOT/'App/Resources/starter.json').write_text(json.dumps(deck,indent=2,ensure_ascii=False)+'\n')
 (ROOT/'Examples/math-foundations.json').write_text(json.dumps(deck,indent=2,ensure_ascii=False)+'\n')
