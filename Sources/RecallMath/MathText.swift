@@ -110,11 +110,17 @@ private struct NativeFormula: View {
         let style: Math.TypesettingStyle = display ? .display : .text
         let metrics = Math.typographicBounds(for: latex, fitting: .unspecified, font: font, style: style)
         if metrics.size.height > 0 {
-            if let artwork = FormulaArtworkCache.shared.image(
+            if let artwork = FormulaArtworkCache.shared.artwork(
                 latex: latex, font: font, style: style, scale: displayScale)
             {
-                FormulaImageLayout(size: metrics.size) {
-                    Image(decorative: artwork, scale: displayScale)
+                FormulaImageLayout(
+                    size: metrics.size,
+                    artworkSize: CGSize(
+                        width: CGFloat(artwork.image.width) / displayScale,
+                        height: CGFloat(artwork.image.height) / displayScale),
+                    padding: artwork.padding
+                ) {
+                    Image(decorative: artwork.image, scale: displayScale)
                         .renderingMode(.template).resizable()
                 }
                 .alignmentGuide(.firstTextBaseline) { dimensions in
@@ -137,36 +143,42 @@ private struct NativeFormula: View {
 private final class FormulaArtworkCache {
     static let shared = FormulaArtworkCache()
     private final class Artwork: NSObject {
-        let image: CGImage
-        init(_ image: CGImage) { self.image = image }
+        let value: Math.RasterizedFormula
+        init(_ value: Math.RasterizedFormula) { self.value = value }
     }
     private let cache = NSCache<NSString, Artwork>()
     private init() {
         cache.countLimit = 512
         cache.totalCostLimit = 16 * 1024 * 1024
     }
-    func image(latex: String, font: Math.Font, style: Math.TypesettingStyle, scale: CGFloat) -> CGImage? {
+    func artwork(latex: String, font: Math.Font, style: Math.TypesettingStyle, scale: CGFloat) -> Math
+        .RasterizedFormula?
+    {
         let key = "\(font.name.rawValue)|\(font.size)|\(style)|\(scale)|\(latex)" as NSString
-        if let hit = cache.object(forKey: key) { return hit.image }
-        let renderer = ImageRenderer(
-            content: Math(latex).mathFont(font).mathTypesettingStyle(style)
-                .foregroundStyle(.black).fixedSize())
-        renderer.scale = scale
-        guard let image = renderer.cgImage else { return nil }
-        cache.setObject(Artwork(image), forKey: key, cost: image.bytesPerRow * image.height)
-        return image
+        if let hit = cache.object(forKey: key) { return hit.value }
+        guard let value = Math.rasterizedFormula(for: latex, font: font, style: style, scale: scale) else {
+            return nil
+        }
+        cache.setObject(Artwork(value), forKey: key, cost: value.image.bytesPerRow * value.image.height)
+        return value
     }
 }
 
 /// Scale an indivisible formula only when it cannot fit; display equations first break at safe boundaries.
 private struct FormulaImageLayout: Layout {
     let size: CGSize
+    let artworkSize: CGSize
+    let padding: CGFloat
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let width = min(size.width, max(1, proposal.width ?? size.width))
         return CGSize(width: width, height: size.height * width / max(1, size.width))
     }
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        subviews.first?.place(at: bounds.origin, proposal: ProposedViewSize(bounds.size))
+        let factor = bounds.width / max(1, size.width)
+        subviews.first?.place(
+            at: CGPoint(x: bounds.minX - padding * factor, y: bounds.minY - padding * factor),
+            proposal: ProposedViewSize(width: artworkSize.width * factor, height: artworkSize.height * factor)
+        )
     }
 }
 

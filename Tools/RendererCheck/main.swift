@@ -22,10 +22,11 @@ func run() throws {
             guard bounds.width.isFinite, bounds.width > 0, bounds.size.height > 0 else {
                 throw CheckError.invalidFormula(latex)
             }
-            let formulaImage = ImageRenderer(
-                content: Math(latex).mathFont(font)
-                    .mathTypesettingStyle(display ? .display : .text).foregroundStyle(.black).fixedSize())
-            guard let image = formulaImage.cgImage else { throw CheckError.renderFailed(latex) }
+            guard
+                let artwork = Math.rasterizedFormula(
+                    for: latex, font: font, style: display ? .display : .text, scale: 2)
+            else { throw CheckError.renderFailed(latex) }
+            let image = artwork.image
             let bitmap = NSBitmapImageRep(cgImage: image)
             let hasInk = stride(from: 0, to: image.height, by: 2).contains { y in
                 stride(from: 0, to: image.width, by: 2).contains { x in
@@ -62,6 +63,8 @@ func run() throws {
     print("Formula parse/layout and glyph drawing (cold): \(cold). Complete native snapshots: \(warm).")
     // A compact visual sheet checks baselines, fractions, wrapping, and theme changes with the actual renderer.
     let samples = [
+        #"What does \(X\setminus Y\) mean?"#,
+        #"\(Y\) \(f\) \(f^{\prime}(x)\)"#,
         #"Differentiate \(e^{g(x)}\), where \(g\) is differentiable."#,
         #"\[\frac{1-x\ln2}{2^x}\]"#,
         #"If \(y=f(u)\) and \(u=g(x)\), give \(\displaystyle\frac{dy}{dx}\)."#,

@@ -21,6 +21,9 @@ upstream style. Local patches:
 - AtomList tracks the previous math atom across spacing/style nodes when deciding
   whether a sign is unary. This fixes the derivative-cycle formula after `\quad`.
 - AtomFactory adds the `\varnothing` and `\nmid` symbols used in existing cards.
+- RasterizedFormula adds a Textual SPI for direct Core Graphics artwork with
+  transparent overhang padding. Logical metrics stay unchanged, preserving inline
+  baselines while retaining italic ink outside the advance width (notably Y).
 - DisplayProvider limits its NSCache stores to 512 parsed formulas and 1,024 layouts.
   NSCache can evict these entries under memory pressure.
 
