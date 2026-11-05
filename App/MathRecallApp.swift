@@ -104,7 +104,7 @@ struct TodayView: View {
                     }
                     if let count = model.library?.needsUnderstandingCount, count > 0 {
                         NavigationLink {
-                            CardListView(needsUnderstandingOnly: true)
+                            LibraryBrowserView(needsUnderstandingOnly: true)
                         } label: {
                             Label(
                                 "\(count) \(count == 1 ? "card needs" : "cards need") understanding",

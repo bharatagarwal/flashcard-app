@@ -109,8 +109,13 @@ for search text, layout measurements, theme choice, and similar independent valu
 | Up | Easy | Flip card |
 | Down | Hard | Close card |
 
-The Library canvas pans across topic groups in both axes. Keep its search and
-archive filters consistent with the list. Card browsing stops at the ends.
+The Library opens on its canvas, which pans across topic groups in both axes.
+A toolbar button switches to the sectioned list and back. The shared All cards /
+Needs understanding selector, search, and archive scope must produce identical
+results in both layouts through `Library.groups(matching:)`. Keep these controls
+outside the layouts so switching views does not reset them. Today’s understanding
+link opens the same browser with that scope selected. Card browsing stops at the
+ends.
 
 Use visit IDs, interaction IDs, and turn tokens to reject stale callbacks. A card
 ID alone is insufficient: the user can leave a card and return before an old
@@ -210,8 +215,12 @@ display math. Display equations wrap at safe top-level equalities and list
 separators; indivisible wide formulas scale to fit. It keeps bounded parse/layout
 caches and a 16 MB, 512-entry artwork cache. Equations draw once into transparent,
 screen-scale images keyed by formula, font, size, style, and display scale.
-Template tinting follows the current theme without another typeset. Keep this
-separation: live math Canvas drawing inside the animated card caused missing
+Use the native raster SPI with transparent overhang padding: italic ink can exceed
+its advance width, particularly Y. Lay out using logical metrics and position the
+padded artwork around those bounds; do not shrink padding into the font size or
+use the clipped Canvas image as the cached result. Keep pixel-edge regression
+checks alongside baseline and theme checks. Template tinting follows the current
+theme without another typeset. Keep this separation: live math Canvas drawing inside the animated card caused missing
 glyphs even when offscreen rendering checks passed.
 
 VoiceOver reads the whole text with spoken fractions, powers, and common symbols.
@@ -282,9 +291,14 @@ Change build settings in `project.yml`, not just the generated Xcode project.
 Use the `MathRecall` scheme. Build products should live outside the source tree,
 such as `/tmp/math-recall-ios-build`.
 
-The user wants a small Xcode footprint. Use the installed iOS SDK and physical
-phone; do not download simulator runtimes unless asked. Read the current signing
-team and device ID from the local setup rather than hardcoding personal IDs here.
+The user wants a small Xcode footprint and has authorized one Apple-silicon iOS
+Simulator runtime with a Recur iPhone 13 mini device. Use it to check the actual
+iOS screens and workflows; prefer this over adapting screens into a Mac test app.
+Do not download additional runtimes or Intel variants unless asked. Shut down the
+simulated device when finished testing to release memory and CPU. Simulator
+storage is a separate test library; keep the phone's data intact. Physical-phone
+touch and performance checks still matter. Read the current signing team and
+device IDs from the local setup rather than hardcoding personal IDs here.
 
 Build a signed generic iOS app with automatic signing, then install the resulting
 `MathRecall.app` with `xcrun devicectl device install app`. Increase the build

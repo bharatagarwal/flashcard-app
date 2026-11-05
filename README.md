@@ -21,9 +21,11 @@ you choose to reset the schedule.
 
 ### Swipes
 
-The grid button in the Library opens a two-dimensional topic canvas. Pan in any
-direction to explore the groups, then tap a stack to browse its cards. The canvas
-respects the current search and archived-card filter; the list stays available.
+The Library opens a two-dimensional topic canvas. Pan in any direction to explore
+its stacks, then tap a topic to browse its cards. The list button switches to the
+sectioned list; the grid button switches back. Search and the **All cards / Needs
+understanding** selector keep the same results in either view. Archived cards have
+the same canvas and list options.
 
 After revealing a review answer, swipe **left for Again**, **down for Hard**,
 **right for Good**, or **up for Easy**. The rating buttons show the same arrows.
@@ -61,9 +63,11 @@ black box. You can mark a card from either stable face. Recur pauses that card's
 memory reviews and moves to the next card without recording a rating. Again,
 Hard, Good, and Easy remain memory ratings.
 
-Today links to cards needing understanding. In Library, tap the filter button
-(**Needs understanding**) to show only these cards. Tap it again to show all cards. These cards remain browsable and keep their
-answers, schedules, and review history. The same filter applies to the canvas.
+Today links to cards needing understanding. In Library, choose **Needs understanding**
+above the canvas to show only paused cards, grouped by topic. Each stack shows how
+many paused cards it contains. Choose **All cards** to return to the full Library.
+The same selector stays available when you switch to the list. These cards remain
+browsable and keep their answers, schedules, and review history.
 You can also mark a card through its **Card actions** menu while browsing.
 
 Once you understand it, tap **Mark understood** on the card's banner. Its original
@@ -88,7 +92,9 @@ Save the card file to Files, then open it in Recur or use Import.
 Math uses native SwiftUI text and Core Text equations through bundled SwiftUIMath.
 Parsed formulas, layouts, and transparent equation images use bounded in-memory caches.
 Equation images render natively at the screen scale, then reuse that artwork during
-scrolling and card turns. No web view, JavaScript, HTML document, or network request
+scrolling and card turns. Artwork retains transparent padding for italic glyphs
+that extend beyond their layout widths, while their text baselines stay unchanged.
+No web view, JavaScript, HTML document, or network request
 is involved in rendering. Text accepts `\(...\)` for inline equations and
 `\[...\]` for display equations. A figure may be part of an answer when the actual question
 requires it; the current starter has no figures. Optional diagram assets are
@@ -135,7 +141,26 @@ Use Xcode 27.2 for the checked compiler and formatter versions.
 Open `MathRecall.xcodeproj`, select the MathRecall scheme and your phone, and set
 your Apple developer team. The display name is Recur; the internal target, bundle
 ID `com.bharat.mathrecall`, and storage folder retain their names to keep data.
-Xcode needs its iOS SDK; simulator runtimes are optional.
+Xcode needs its iOS SDK. Local iOS UI checks use one Apple-silicon Simulator
+runtime and the **Recur iPhone 13 mini** device. It has its own test library;
+it does not sync with the phone. Keep extra runtimes uninstalled and shut down
+the simulated device after testing to release memory.
+
+To build for the simulator:
+
+```sh
+xcodebuild -project MathRecall.xcodeproj -scheme MathRecall \
+    -destination 'generic/platform=iOS Simulator' \
+    -derivedDataPath /tmp/recur-simulator-build CODE_SIGNING_ALLOWED=NO build
+```
+
+Select **Recur iPhone 13 mini** in Xcode to run it, or use its ID from
+`xcrun simctl list devices available` with `simctl boot`, `install`, and `launch`.
+The app is at `/tmp/recur-simulator-build/Build/Products/Debug-iphonesimulator/MathRecall.app`.
+Simulator checks cover iOS layout and workflows; use the phone for final touch
+and performance checks. The runtime is installed, but this local Xcode copy is
+missing `Simulator.app`, so interactive simulator checks still need that app
+restored from the matching Xcode distribution.
 
 ```sh
 Scripts/check.sh

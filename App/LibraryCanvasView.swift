@@ -1,74 +1,53 @@
 import RecallCore
 import SwiftUI
 
-/// Topics occupy stable positions, so panning does not change their order or a card’s schedule.
+/// A shared query supplies these topic stacks; switching to the list preserves the same scope.
 struct LibraryCanvasView: View {
     @EnvironmentObject var model: AppModel
-    @Environment(\.dismiss) private var dismiss
-    let cardIDs: [String]
-    var archived = false
-    var needsUnderstandingOnly = false
-
-    private var groups: [(topic: Concept, cards: [Flashcard])] {
-        let included = Set(cardIDs)
-        let cards = (model.library?.deck.cards ?? []).filter {
-            included.contains($0.id) && $0.isArchived == archived
-                && (!needsUnderstandingOnly || model.library?.needsUnderstanding($0.id) == true)
-        }
-        return (model.library?.deck.concepts ?? []).compactMap { topic in
-            let group = cards.filter { $0.conceptID == topic.id }
-            return group.isEmpty ? nil : (topic, group)
-        }
-    }
+    let groups: [LibraryGroup]
+    let needsUnderstandingOnly: Bool
 
     var body: some View {
-        NavigationStack {
-            ScrollView([.horizontal, .vertical]) {
-                LazyVGrid(
-                    columns: Array(repeating: GridItem(.fixed(264), spacing: 32), count: 3),
-                    alignment: .leading, spacing: 36
-                ) {
-                    ForEach(groups, id: \.topic.id) { group in
-                        if let first = group.cards.first {
-                            NavigationLink {
-                                CardDetailView(
-                                    cardID: first.id, cardIDs: group.cards.map(\.id),
-                                    needsUnderstandingOnly: needsUnderstandingOnly)
-                            } label: {
-                                topicStack(group.topic, cards: group.cards, first: first)
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel("\(group.topic.title), \(group.cards.count) cards")
-                            .accessibilityHint("Browse this topic")
+        ScrollView([.horizontal, .vertical]) {
+            LazyVGrid(
+                columns: Array(repeating: GridItem(.fixed(264), spacing: 32), count: 3),
+                alignment: .leading, spacing: 36
+            ) {
+                ForEach(groups) { group in
+                    if let first = group.cards.first {
+                        NavigationLink {
+                            CardDetailView(
+                                cardID: first.id, cardIDs: group.cards.map(\.id),
+                                needsUnderstandingOnly: needsUnderstandingOnly)
+                        } label: {
+                            topicStack(group, first: first)
                         }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(
+                            "\(group.concept.title), \(group.cards.count) \(group.cards.count == 1 ? "card" : "cards")"
+                        )
+                        .accessibilityHint("Browse this topic")
                     }
                 }
-                .padding(.horizontal, 24).padding(.top, 32).padding(.bottom, 48)
             }
-            .background(Palette.paper)
-            .overlay {
-                if groups.isEmpty {
-                    ContentUnavailableView(
-                        needsUnderstandingOnly ? "No cards need understanding" : "No matching cards",
-                        systemImage: "rectangle.stack")
-                }
-            }
-            .navigationTitle("Library canvas").navigationBarTitleDisplayMode(.inline)
-            .safeAreaInset(edge: .bottom) {
+            .padding(.horizontal, 24).padding(.top, 24).padding(.bottom, 48)
+        }
+        .safeAreaInset(edge: .bottom) {
+            if !groups.isEmpty {
                 Text("Pan to explore · Tap a topic to browse")
                     .font(.caption).foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity).padding(12).background(.bar)
             }
-            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
     }
 
-    private func topicStack(_ topic: Concept, cards: [Flashcard], first: Flashcard) -> some View {
-        VStack(alignment: .leading, spacing: 14) {
+    private func topicStack(_ group: LibraryGroup, first: Flashcard) -> some View {
+        let paused = group.cards.filter { model.library?.needsUnderstanding($0.id) == true }.count
+        return VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline) {
-                Text(topic.title).font(.headline)
+                Text(group.concept.title).font(.headline)
                 Spacer(minLength: 4)
-                Text("\(cards.count)").font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                Text("\(group.cards.count)").font(.caption.monospacedDigit()).foregroundStyle(.secondary)
             }
             ZStack {
                 RoundedRectangle(cornerRadius: 20).fill(Palette.surface)
@@ -85,6 +64,13 @@ struct LibraryCanvasView: View {
             }
             .frame(height: 208).padding(.bottom, 10)
             .allowsHitTesting(false)
+            if paused > 0 {
+                Label(
+                    needsUnderstandingOnly ? "Memory reviews paused" : "\(paused) need understanding",
+                    systemImage: "questionmark.circle"
+                )
+                .font(.caption).foregroundStyle(.secondary)
+            }
         }
         .frame(width: 264, alignment: .leading)
         .contentShape(Rectangle())

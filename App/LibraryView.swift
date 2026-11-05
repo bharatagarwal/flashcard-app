@@ -2,46 +2,111 @@ import RecallCore
 import SwiftUI
 
 struct LibraryView: View {
-    var body: some View { NavigationStack { CardListView() } }
+    var body: some View { NavigationStack { LibraryBrowserView() } }
 }
 
-struct CardListView: View {
+enum LibraryLayout {
+    case canvas, list
+}
+
+/// Search and scope stay in one place while the user switches how the same cards are shown.
+struct LibraryBrowserView: View {
     @EnvironmentObject var model: AppModel
-    var archived = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let archived: Bool
     @State private var search = ""
-    @State private var showingCanvas = false
+    @State private var layout: LibraryLayout
     @State private var needsUnderstandingOnly: Bool
 
-    init(archived: Bool = false, needsUnderstandingOnly: Bool = false) {
+    init(archived: Bool = false, needsUnderstandingOnly: Bool = false, layout: LibraryLayout = .canvas) {
         self.archived = archived
         _needsUnderstandingOnly = State(initialValue: needsUnderstandingOnly)
-    }
-    private var groups: [(topic: Concept, cards: [Flashcard])] {
-        let concepts = model.library?.deck.concepts ?? []
-        let titles = Dictionary(uniqueKeysWithValues: concepts.map { ($0.id, $0.title) })
-        let matches = (model.library?.deck.cards ?? []).filter {
-            $0.isArchived == archived
-                && (!needsUnderstandingOnly || model.library?.needsUnderstanding($0.id) == true)
-                && (search.isEmpty
-                    || ($0.prompt + " " + $0.answer + " " + (titles[$0.conceptID] ?? ""))
-                        .localizedCaseInsensitiveContains(search))
-        }
-        let byTopic = Dictionary(grouping: matches, by: \.conceptID)
-        return concepts.compactMap { topic in
-            guard let cards = byTopic[topic.id], !cards.isEmpty else { return nil }
-            return (topic, cards)
-        }
+        _layout = State(initialValue: layout)
     }
     var body: some View {
-        let groups = groups
+        let query = LibraryQuery(
+            archived: archived, needsUnderstandingOnly: needsUnderstandingOnly, search: search)
+        let groups = model.library?.groups(matching: query) ?? []
+        let pausedCount =
+            model.library?.groups(matching: LibraryQuery(archived: archived, needsUnderstandingOnly: true))
+            .reduce(0) { $0 + $1.cards.count } ?? 0
+        Group {
+            switch layout {
+            case .canvas:
+                LibraryCanvasView(groups: groups, needsUnderstandingOnly: needsUnderstandingOnly)
+                    .id(query)
+            case .list:
+                LibrarySectionsView(
+                    groups: groups, archived: archived, needsUnderstandingOnly: needsUnderstandingOnly)
+            }
+        }
+        .background(Palette.paper)
+        .navigationTitle(archived ? "Archived cards" : "Library")
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $search, prompt: "Find a card")
+        .safeAreaInset(edge: .top) {
+            Picker("Cards to show", selection: $needsUnderstandingOnly) {
+                Text("All cards").tag(false)
+                Text("Needs understanding (\(pausedCount))").tag(true)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, 20).padding(.top, 8).padding(.bottom, 12)
+            .background(Palette.paper)
+        }
+        .overlay {
+            if groups.isEmpty {
+                if !search.isEmpty {
+                    ContentUnavailableView.search(text: search)
+                } else if needsUnderstandingOnly {
+                    ContentUnavailableView(
+                        "No cards need understanding", systemImage: "questionmark.circle",
+                        description: Text("Mark a card during a review to pause it here."))
+                } else if archived {
+                    ContentUnavailableView(
+                        "No archived cards", systemImage: "archivebox",
+                        description: Text("Restored cards appear in Library."))
+                } else {
+                    ContentUnavailableView("No cards", systemImage: "rectangle.stack")
+                }
+            }
+        }
+        .toolbar {
+            Button {
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) {
+                    layout = layout == .canvas ? .list : .canvas
+                }
+            } label: {
+                Label(
+                    layout == .canvas ? "Show list" : "Show canvas",
+                    systemImage: layout == .canvas ? "list.bullet" : "square.grid.3x3")
+            }
+            if !archived, model.library?.deck.cards.contains(where: \.isArchived) == true {
+                NavigationLink {
+                    LibraryBrowserView(
+                        archived: true, needsUnderstandingOnly: needsUnderstandingOnly, layout: layout)
+                } label: {
+                    Label("Archived cards", systemImage: "archivebox")
+                }
+            }
+        }
+    }
+}
+
+private struct LibrarySectionsView: View {
+    @EnvironmentObject var model: AppModel
+    let groups: [LibraryGroup]
+    let archived: Bool
+    let needsUnderstandingOnly: Bool
+
+    var body: some View {
         let orderedIDs = groups.flatMap { $0.cards.map(\.id) }
         List {
-            if archived, !orderedIDs.isEmpty {
+            if archived, !groups.isEmpty {
                 Text("Archived cards stay out of reviews. Restore a card to return it to the Library.")
                     .font(.subheadline).foregroundStyle(.secondary).listRowBackground(Color.clear)
             }
-            ForEach(groups, id: \.topic.id) { group in
-                Section(group.topic.title) {
+            ForEach(groups) { group in
+                Section(group.concept.title) {
                     ForEach(group.cards) { card in
                         NavigationLink {
                             CardDetailView(
@@ -55,72 +120,22 @@ struct CardListView: View {
                                         .font(.caption).foregroundStyle(.secondary)
                                 }
                             }.padding(.vertical, 10)
-                        }.listRowBackground(Palette.surface)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button(
-                                    archived ? "Restore to Library" : "Archive",
-                                    systemImage: archived ? "tray.and.arrow.up" : "archivebox"
-                                ) {
-                                    do {
-                                        try model.setArchived(cardID: card.id, archived: !archived)
-                                    } catch { model.error = error.localizedDescription }
-                                }.tint(archived ? Palette.accent : .secondary)
-                            }
+                        }
+                        .listRowBackground(Palette.surface)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(
+                                archived ? "Restore to Library" : "Archive",
+                                systemImage: archived ? "tray.and.arrow.up" : "archivebox"
+                            ) {
+                                do { try model.setArchived(cardID: card.id, archived: !archived) } catch {
+                                    model.error = error.localizedDescription
+                                }
+                            }.tint(archived ? Palette.accent : .secondary)
+                        }
                     }
                 }
             }
-        }
-        .scrollContentBackground(.hidden).background(Palette.paper)
-        .navigationTitle(
-            archived ? "Archived cards" : (needsUnderstandingOnly ? "Needs understanding" : "Library")
-        )
-        .searchable(text: $search, prompt: "Find a card")
-        .overlay {
-            if orderedIDs.isEmpty {
-                if needsUnderstandingOnly, search.isEmpty {
-                    ContentUnavailableView(
-                        "No cards need understanding", systemImage: "questionmark.circle",
-                        description: Text(
-                            "Marked cards will appear here. Their memory reviews pause until you mark them understood."
-                        ))
-                } else if archived, search.isEmpty {
-                    ContentUnavailableView(
-                        "No archived cards", systemImage: "archivebox",
-                        description: Text("Restored cards appear in Library."))
-                } else {
-                    ContentUnavailableView.search(text: search)
-                }
-            }
-        }
-        .fullScreenCover(isPresented: $showingCanvas) {
-            LibraryCanvasView(
-                cardIDs: orderedIDs, archived: archived, needsUnderstandingOnly: needsUnderstandingOnly)
-        }
-        .toolbar {
-            Button {
-                needsUnderstandingOnly.toggle()
-            } label: {
-                Label(
-                    needsUnderstandingOnly ? "Show all cards" : "Needs understanding",
-                    systemImage: needsUnderstandingOnly
-                        ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
-            }
-            .accessibilityValue(
-                needsUnderstandingOnly ? "Showing cards needing understanding" : "Showing all cards")
-            Button {
-                showingCanvas = true
-            } label: {
-                Label("Browse canvas", systemImage: "square.grid.3x3")
-            }
-            .disabled(orderedIDs.isEmpty)
-            if !archived, model.library?.deck.cards.contains(where: \.isArchived) == true {
-                NavigationLink {
-                    CardListView(archived: true, needsUnderstandingOnly: needsUnderstandingOnly)
-                } label: {
-                    Label("Archived cards", systemImage: "archivebox")
-                }
-            }
-        }
+        }.scrollContentBackground(.hidden)
     }
 }
 
